@@ -1,0 +1,139 @@
+
+/*Navbar*/
+	ul {
+	    list-style-type: none;
+	    margin: 0;
+	    padding:0;
+	    overflow: hidden;
+	    background-color: white;
+		border-bottom: 1px solid LightGray;
+}
+
+	li {
+	   font-family:Nunito, sans-serif;
+	   text-align: center;
+	   display: block;
+}
+
+	.nav1 {
+		float: right;
+	    color: black;
+	    padding: 14px 16px;
+		text-decoration: none;
+}
+
+	.nav1:hover {
+		background-color: LightGray;
+}
+	li b {
+		float:left;
+	    color: black;
+	    padding:14px 16px;
+		font-weight: bold
+	}
+	.active {
+		float: right;
+	    padding: 14px 16px;
+		text-decoration: none;
+		background-color: Gray;
+		color: white;
+}
+
+/*Heading*/
+	h1 {
+		font-size: 300%;
+		padding-top:10px;
+		text-align:center;
+		font-family: Quicksand, sans-serif;
+	}
+	h2{
+		text-align:center;
+		font-family:Quicksand, sans-serif;
+		padding-top:50 px;
+	}
+/*body-text-styles*/
+
+	p {
+		text-align:left;
+		font-family: Nunito, sans-serif;
+		font-size: 20px;
+		line-height: 1.2;
+		padding-left: 10px
+	}
+	.heading{
+		font-family: Nunito, sans-serif;
+		text-align:left;
+		font-size: 20px;
+		font-weight: bold;
+	}
+	.on-top{
+		z-index:2;
+	}
+	.link{
+		float: none;
+	    color: grey;
+	    padding: 0;
+		text-decoration: none;
+	}
+	
+	.link:hover{
+		color: red;
+		background-color: white;
+	}
+	
+	.link-b{
+		font-family: Nunito, sans-serif;
+		float: none;
+	    color: white;
+	    padding: 0;
+		text-decoration: none;
+		background-color: transparent;
+		line-height: 0.8;
+	}
+
+	
+
+/*body*/
+
+	.flex-container{
+		display:flex;
+		height:80%;
+		justify-content: center;
+		align-items:center;
+		background-color:grey;
+		flex-wrap: wrap;
+	}
+	
+	
+/*body for home*/
+	.flex-item-b {
+		font-family:Nunito, sans-serif;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		overflow: hidden;
+		background-color: white;
+		width:25%;
+		margin: 10px;
+		margin-top:20px;
+		text-align: center;
+		line-height: 75px;
+		font-size: 30px;
+		border-radius:4px;
+	}
+	
+	.flex-container-b{
+		display:flex;
+		flex: 0 0 auto;
+		justify-content: center;
+		align-items:center;
+		background-color:grey;
+		flex-wrap: wrap;
+	}
+		.img1 {
+		width: 100%
+	}
+	.img1:hover {
+		opacity: 0.5;
+    }
+
+
+
