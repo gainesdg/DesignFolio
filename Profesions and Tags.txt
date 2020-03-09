@@ -14,7 +14,6 @@ Graphic Designer
 -logo
 -fonts
 -user interface
--formatting
 -styalised illustartion
 -minimalism
 -publication
@@ -59,3 +58,10 @@ Game Developer
 -user inetrface
 -shaders
 -animation
+-level design
+
+Software Designer
+-asset design
+-wireframe diagram
+-database diagram
+-class diagrams
