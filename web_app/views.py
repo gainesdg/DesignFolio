@@ -2,13 +2,22 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from web_app.models import Profession
 # Create your views here.
 
 def index(request):
-    return render(request, 'web_app/index.html', context={ 'boldmessage' : 'DesignFolio'})
+    professions_list = Profession.objects.all()
+    context_dict={}
+    context_dict['professions']= professions_list
+    return render(request, 'web_app/index.html', context_dict)
+
+def profession(request, profession_name_slug):
+    context_dict={}
+    return render(request, 'web_app/profession.html', context_dict)
 
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
