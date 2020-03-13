@@ -25,11 +25,26 @@ def populate():
 		["Asset Design","Wireframe Diagrams","Database Diagrams","Class Diagrams"],
     }
 
-    post = {
-    "id":1,
-    "section":"Stars"
-    }
+    """
+    Users = {
+        "Joe": {
+            "Nature Paintings":Tree,
+            "Landscapes Sketches":,
+            }
 
+        "Kam": {
+            "Dresses":, 
+            "Swimwear":,
+            }
+
+        "Tan": {
+            "Santander Redesign":,
+            "Design_Grid tests":,
+            }
+
+    }
+    """
+    
     #add professions and tags using the dictionary above ^
     for prof, tags in professions.items():
         p = add_profession(prof)
