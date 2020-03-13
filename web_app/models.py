@@ -14,7 +14,7 @@ class Profession(models.Model):
     def __str__(self):
         return self.name
 
-
+"""
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     user_name = models.CharField(max_length=64, unique=True)
@@ -36,9 +36,9 @@ class Section(models.Model):
     name = models.CharField(max_length=128)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-     def __str__(self):
+    def __str__(self):
         return self.user_name
-
+"""
 
 class Tags(models.Model):
     name = models.CharField(max_length=128)
@@ -47,7 +47,7 @@ class Tags(models.Model):
     def __str__(self):
         return self.name
 
-
+"""
 class Posts(models.Model):
     post_id = models.AutoField(unique=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
@@ -60,3 +60,4 @@ class Posts(models.Model):
     def __str__(self):
         return self.user.username
 
+"""

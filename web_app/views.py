@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from web_app.models import Profession
+from web_app.models import Tags
 # Create your views here.
 
 def index(request):
@@ -16,7 +17,21 @@ def index(request):
     return render(request, 'web_app/index.html', context_dict)
 
 def profession(request, profession_name_slug):
-    context_dict={}
+    context_dict = {}
+
+    try:
+
+        profession = Profession.objects.get(slug=profession_name_slug)
+        tags = Tags.objects.filter(profession=profession)
+        
+        context_dict['tags'] = tags
+        context_dict['profession'] = profession
+    except Profession.DoesNotExist:
+        # We get here if we didn't find the specified category.
+        # Don't do anything -
+        # the template will display the "no category" message for us.
+        context_dict['profession'] = None
+        context_dict['tags'] = None
     return render(request, 'web_app/profession.html', context_dict)
 
 def get_server_side_cookie(request, cookie, default_val=None):
