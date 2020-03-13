@@ -1,0 +1,129 @@
+
+/*Navbar*/
+	.navbar {
+	    list-style-type: none;
+	    margin: 0;
+	    padding:0;
+	    overflow: hidden;
+	    background-color: white;
+		border-bottom: 1px solid LightGray;
+}
+
+	li {
+	   font-family:Nunito, sans-serif;
+	   text-align: center;
+	   display: block;
+}
+
+	.nav1 {
+		float: right;
+	    color: black;
+	    padding: 14px 16px;
+		text-decoration: none;
+	}
+
+	li b {
+		float:left;
+	    color: black;
+	    padding:14px 16px;
+		font-weight: bold;
+	}
+	.active {
+		float: right;
+	    padding: 14px 16px;
+		text-decoration: none;
+		background-color: Gray;
+		color: white;
+	}
+	.dropdown {
+		 position: relative;
+		 display: inline-block;
+	}
+
+	.dropbtn {
+		float: right;
+	    color: black;
+	    padding: 14px 16px;
+		text-decoration: none;
+		
+		display: inline-block;
+		text-align: center;
+	}
+	
+	.dropcontent{
+		position:absolute;
+		background-color: white;
+		color: black;
+		z-index: 1;
+	}
+	
+	.dropdown:hover .dropcontent {
+		display: block;
+	}
+	
+	
+	.dropdown:hover, .nav1:hover {
+		background-color: LightGray;
+		
+/*Heading*/
+
+	h1 {
+		font-size: 300%;
+		padding-top:10px;
+		padding-left:20px;
+		text-align:left;
+		font-family: Quicksand, sans-serif;
+	}
+	h2{
+		text-align:center;
+		font-family:Quicksand, sans-serif;
+		padding-top:50 px;
+	}
+	
+	
+/*body for home*/
+	.flex-item-b {
+		font-family:Nunito, sans-serif;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		overflow: hidden;
+		background-color: white;
+		width:25%;
+		margin: 10px;
+		margin-top:20px;
+		text-align: center;
+		line-height: 75px;
+		font-size: 30px;
+		border-radius:4px;
+	}
+	
+	.flex-container-b{
+		display:flex;
+		flex: 0 0 auto;
+		justify-content: center;
+		align-items:center;
+		background-color:grey;
+		flex-wrap: wrap;
+	}
+
+/*body for professions*/
+	.column{
+		float:left;
+		width:20%;
+	}
+	
+	.flex-item-c {
+		font-family:Nunito, sans-serif;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		overflow: hidden;
+		background-color: white;
+		width:29%;
+		margin: 10px;
+		margin-top:20px;
+		text-align: center;
+		line-height: 75px;
+		font-size: 30px;
+		border-radius:4px;
+	}
+
+
+
