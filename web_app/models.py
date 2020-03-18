@@ -55,16 +55,25 @@ class Tags(models.Model):
     def __str__(self):
         return self.name
 
-"""
+
 class Posts(models.Model):
-    post_id = models.AutoField(unique=True)
+    pid = models.AutoField(primary_key=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    profession = models.ForeignKey(Profession, on_delete=models.CASCADE, null=True)
     picture = models.ImageField(upload_to='post_images', blank=True)
     title = models.CharField(max_length=128)
     descriptiuon = models.CharField(max_length=512)
     likes = models.IntegerField(default=0)
-    tags = models.ManyToManyField(Tags)
+
+    
+    def __str__(self):
+        string = ''.join((self.title,"_",str(self.pid)))
+        return string
+
+class PostTags(models.Model):
+    post = models.ForeignKey(Posts, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tags, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.title
-"""
+        return self.tag.name
+

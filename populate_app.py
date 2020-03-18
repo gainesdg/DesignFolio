@@ -18,7 +18,7 @@ def populate():
 	"Fashion Designer":
 		["Dress","Suit","Casual","Abstract","Womens","Mens","Day Wear","Evening Wear","Sports Wear","Swim Wear","Lingerie"],
 	"Interior Designer":
-		["Mid-Century Modern","Industustrail","Nautical","Scandinavian","Bohemian","Minimalist"],
+		["Mid-Century Modern","Industrail","Nautical","Scandinavian","Bohemian","Minimalist"],
 	"Game Developer":
 		["Character Model","Asset Model","Scene","User Interface","Shaders","Animation","Level Design"],
 	"Software Designer":
@@ -37,19 +37,19 @@ def populate():
     sections = {
         'Joe':{
             'landscapes':{
-                'north-beach':{'description':'','tags':''},
-                'tenby-harbour':{'description':'','tags':''}
+                'north-beach':{'description':'north beach tenby','profession':'Artist','tags':['Digital','Realism','Landscape'],'likes':22},
+                'tenby-harbour':{'description':'tenby harbour','profession':'Artist','tags':['Abstract','Landscape'],'likes':19}
                 },
 
             'cityscapes':{
-                'the shard':{'description':'','tags':''},
-                'big ben':{'description':'','tags':''}
+                'the shard':{'description':'the shard -london','profession':'Artist','tags':['Cityscape'],'likes':2},
+                'big ben':{'description':'','profession':'Artist','tags':['Digital','Cityscape'],'likes':0}
                 },
             },
         'Tan':{
             'Logos':{
-                'design_grid':{'description':'','tags':''},
-                'design_folio':{'description':'','tags':''}
+                'design_grid':{'description':'final logo for design grid','profession':'Graphic Designer','tags':['Logo'],'likes':30},
+                'design_folio':{'description':'','profession':'Graphic Designer','tags':['Logo'],'likes':52}
                 }
             }
         }
@@ -64,7 +64,19 @@ def populate():
         u = add_user(details['username'], details['email'], details['password'])
 
         for section_name, posts in sections[user].items(): #loop through sections for user
-            add_section(section_name, u)
+            s = add_section(section_name, u)
+
+            for post_title, post_info in posts.items():
+                profession = Profession.objects.get(name=post_info['profession'])
+                p = add_post(s, post_title,post_info['description'],post_info['likes'],
+                    profession)
+
+                for tag in post_info['tags']:
+                    t = Tags.objects.filter(profession=profession) #find tags of the posts profession
+                    t = t.filter(name=tag)[0] #find the tag with a matching name
+                    add_post_tags(p, t)
+
+
 
     #print out the pfossions added
     print('Added Professions and Tags:')
@@ -76,9 +88,13 @@ def populate():
     #print out each user thats been added
     print('\nAdded Users:')
     for u in User.objects.all():
-        print(f'-{u}')
+        print(f'- {u}')
         for s in Section.objects.filter(user=u):
             print(f'\t- {s}')
+            for p in Posts.objects.filter(section=s):
+                print(f'\t\t- {p}')
+                for t in PostTags.objects.filter(post=p):
+                    print(f'\t\t\t- {t}')
 
 def add_profession(name):
     p = Profession.objects.get_or_create(name=name)[0]
@@ -100,6 +116,19 @@ def add_section(name, user):
     s = Section.objects.get_or_create(name=name, user=user)[0]
     s.save()
     return s
+
+def add_post(section, title, description, likes, profession):
+    p = Posts.objects.get_or_create(section=section, title=title)[0]
+    p.description = description
+    p.likes=likes
+    p.profession = Profession.objects.get(name=profession)
+    p.save()
+    return p
+
+def add_post_tags(post, tag):
+    t = PostTags.objects.get_or_create(post=post, tag=tag)[0]
+    t.save()
+    return t
 
 if __name__ == '__main__':
     print('Starting web app population script...')
