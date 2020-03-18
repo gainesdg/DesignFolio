@@ -22,16 +22,18 @@ class UserProfile(models.Model):
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
     location = models.CharField(max_length=32)
     bio = models.CharField(max_length=256)
-    available = models.BooleanField(default=False, null=False)
+    available = models.BooleanField(default=False)
     link1 = models.URLField(blank=True)
     link2 = models.URLField(blank=True)
     link3 = models.URLField(blank=True)
     
+    
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(User, self).save(*args, **kwargs)
+        self.slug = slugify(self.user.username)
+        super(UserProfile, self).save(*args, **kwargs)
+    
 
     def __str__(self):
         return self.user.username

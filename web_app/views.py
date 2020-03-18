@@ -6,8 +6,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from web_app.models import Profession
-from web_app.models import Tags
+from web_app.models import *
 # Create your views here.
 
 def index(request):
@@ -27,12 +26,37 @@ def profession(request, profession_name_slug):
         context_dict['tags'] = tags
         context_dict['profession'] = profession
     except Profession.DoesNotExist:
-        # We get here if we didn't find the specified category.
-        # Don't do anything -
-        # the template will display the "no category" message for us.
-        context_dict['profession'] = None
+        context_dict['profession'] = "Profession not found."
         context_dict['tags'] = None
     return render(request, 'web_app/profession.html', context_dict)
+
+
+def profile(request, user_name_slug):
+    context_dict = {}
+    try:
+        user = UserProfile.objects.get(slug=user_name_slug)
+
+        context_dict['username'] = user.user.username
+        context_dict['location'] = user.location
+        context_dict['bio'] = user.bio
+        if user.available:
+            avail = ''.join(("Available\n",user.user.email))
+            context_dict['available'] = avail
+        else:
+            context_dict['available'] = "Not Available"
+        """
+        context_dict['link1'] = user.link1
+        context_dict['link2'] = user.link2
+        context_dict['link3'] = user.link3
+        """
+    except Profession.DoesNotExist:
+        context_dict['username'] = "User not found."
+        context_dict['location'] = None
+        context_dict['bio'] = None
+        context_dict['available'] = None
+
+    return render(request, 'web_app/profile.html', context_dict)
+
 
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
@@ -84,11 +108,6 @@ def user_login(request):
             return HttpResponse("Invalid login details supplied.")
     else:
         return render(request, 'web_app/login.html')
-
-
-@login_required
-def restricted(request):
-    return render(request, 'web_app/restricted.html')
 
 @login_required
 def user_logout(request):

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html>
+<body>
+
+<!-- *** PROFILE *** -->
+
+<!-- Username-->
+<h2> {{username}} </h2>
+
+<!-- Profile Picture-->
+<!-- draft copied and altered from rango
+<img src="{% static 'profile_pictures/username.jpg' %}" alt= "profile_picture" />
+-->
+
+<!-- Location-->
+<div>
+	Location: {{location}}
+</div>
+
+<!-- Bio-->
+<div>
+	Bio: {{bio}}
+</div>
+
+<!-- Available-->
+ 
+<!--if available
+		show checkmark
+		show email -->
+<div>
+<!-- use java script for conditional and display icon when appropriate
+current available is passed from python -->
+	{{available}} 
+</div>
+		
+<!-- Links -->
+		
+	{% for link in links %}
+		<div>link</div>
+	<!-- if link not null 
+		display link icon button thing
+		if link != null
+			<li><a href="{{link1}}">Link</a></li>
+		endif -->
+	{% endfor %}
+		
+<!-- Portfolio Title -->
+<h2> P O R T F O L I O </h2>
+		
+<!-- *** PROFESSIONS FILTER COLUMN *** -->
+
+
+<!-- *** SECTIONS AND POSTS *** -->
+
+
+
+</body>

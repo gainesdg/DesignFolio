@@ -34,6 +34,27 @@ def populate():
             'password':'password456'}
     }
 
+    profile = {
+        'Joe':{'location':'Pembrokeshire',
+            'bio':'I like games and stuff',
+            'profession':'Artist',
+            'available':True,
+            'link1':'',
+            'link2':'',
+            'link3':''
+        },
+        'Tan':{'location':'London',
+            'bio':'CS student at University of Glasgow',
+            'profession':'Graphic Designer',
+            'available':False,
+            'link1':'',
+            'link2':'',
+            'link3':''
+
+        }
+
+    }
+
     sections = {
         'Joe':{
             'landscapes':{
@@ -62,7 +83,15 @@ def populate():
 
     for user, details in users.items(): #loop through users
         u = add_user(details['username'], details['email'], details['password'])
-
+        
+        d = add_profile(u,  profile[user]['location'],
+                            profile[user]['bio'],
+                            profile[user]['profession'],
+                            profile[user]['available'],
+                            profile[user]['link1'],
+                            profile[user]['link2'],
+                            profile[user]['link3'])
+        
         for section_name, posts in sections[user].items(): #loop through sections for user
             s = add_section(section_name, u)
 
@@ -109,6 +138,16 @@ def add_tag(name, profession):
 
 def add_user(username, email, password):
     u = User.objects.get_or_create(username=username, email=email, password=password)[0]
+    u.save()
+    return u
+
+def add_profile(user, location, bio, profession, available, l1, l2, l3):
+
+    profession = Profession.objects.get(name=profession)
+    u = UserProfile.objects.get_or_create(user=user, profession=profession, link1=l1, link2=l2, link3=l3)[0]
+    u.location=location
+    u.bio=bio
+    u.available=available
     u.save()
     return u
 
