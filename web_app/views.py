@@ -44,11 +44,13 @@ def profile(request, user_name_slug):
             context_dict['available'] = avail
         else:
             context_dict['available'] = "Not Available"
-        """
-        context_dict['link1'] = user.link1
-        context_dict['link2'] = user.link2
-        context_dict['link3'] = user.link3
-        """
+        
+        links = UserLinks.objects.filter(user=user.user)
+        context_dict['links'] = {}
+        for link in links:
+            context_dict['links'][link.site_name] = link.link
+
+
     except Profession.DoesNotExist:
         context_dict['username'] = "User not found."
         context_dict['location'] = None

@@ -23,11 +23,7 @@ class UserProfile(models.Model):
     location = models.CharField(max_length=32)
     bio = models.CharField(max_length=256)
     available = models.BooleanField(default=False)
-    link1 = models.URLField(blank=True)
-    link2 = models.URLField(blank=True)
-    link3 = models.URLField(blank=True)
-    
-    
+
     slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
@@ -37,6 +33,14 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class UserLinks(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    site_name = models.CharField(max_length=32)
+    link = models.URLField(unique=True)
+
+    def __str__(self):
+        return self.site_name
 
 
 class Section(models.Model):
