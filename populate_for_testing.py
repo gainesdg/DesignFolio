@@ -5,6 +5,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE',
 import django
 django.setup()
 from web_app.models import *
+from django.contrib.auth.hashers import make_password
 
 def populate():
 
@@ -143,7 +144,7 @@ def add_tag(name, profession):
     return t
 
 def add_user(username, email, password):
-    u = User.objects.get_or_create(username=username, email=email, password=password)[0]
+    u = User.objects.get_or_create(username=username, email=email, password=make_password(password))[0]
     u.save()
     return u
 

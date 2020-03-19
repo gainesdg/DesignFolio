@@ -44,11 +44,15 @@ class UserLinks(models.Model):
 
 
 class Section(models.Model):
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=128)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = (('name', 'user'))
+        
     def __str__(self):
         return self.name
+
 
 
 class Tags(models.Model):

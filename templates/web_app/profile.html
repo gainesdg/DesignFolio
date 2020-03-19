@@ -7,32 +7,27 @@
 <!-- *** PROFILE *** -->
 
 <!-- Username-->
-<h2> {{username}} </h2>
+<h3> {{profile.user.username}} </h3>
 
-<!-- Profile Picture-->
-<!-- draft copied and altered from rango
-<img src="{% static 'profile_pictures/username.jpg' %}" alt= "profile_picture" />
--->
+<!-- Profile Picture:
+<img src="{{ MEDIA_URL }}{{username}}.jpg" alt="Post Image." /> -->
 
 <!-- Location-->
 <div>
-	Location: {{location}}
+	Location: {{profile.location}}
 </div>
 
 <!-- Bio-->
 <div>
-	Bio: {{bio}}
+	Bio: {{profile.bio}}
 </div>
 
 <!-- Available-->
  
-<!--if available
-		show checkmark
-		show email -->
 <div>
 
-	{{available}} <br>
-	{% if user.available %} <!-- check user profile available boolean field -->
+	{{available}} <br> <!-- add checkmark -->
+	{% if profile.available %} <!-- check user profile available boolean field -->
 		{% if user.is_authenticated %} <!-- check the user is logged in to view email -->
 			{{email}}
 		{% else %}
@@ -52,15 +47,12 @@
 <hr>
 <h2> P O R T F O L I O </h2>
 <div>
-	{% if user.is_authenticated %}
+	{% if owner %}
 		<!-- if user is on their own profile page -->
-		Add Section
-		Add Post
+		<li><a href="{% url 'design-grid:add_post' %}">Create Post</a></li>
+		<li><a href="{% url 'design-grid:add_section' %}">Add Section</a></li>
 	{% endif %}
 </div>
-
-		
-<!-- *** PROFESSIONS FILTER COLUMN *** -->
 
 
 <!-- *** SECTIONS AND POSTS *** -->
