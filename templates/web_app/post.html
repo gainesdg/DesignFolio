@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<body>
+
+<div>
+	Title: {{post.title}} <br>
+	Description: {{post.description}} <br>
+	Likes: {{post.likes}} <br>
+	
+	Tags: 
+	{% for tag in tags %}
+		{{tag}}
+	{% endfor %}
+	
+</div>
+
+</body>
+</html>

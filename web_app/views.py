@@ -60,7 +60,7 @@ def profile(request, user_name_slug):
         for link in links:
             context_dict['links'][link.site_name] = link.link
 
-        #Add the sections and posts within the sections
+        #Add the sections and posts within the sections owned by the user
         sections = Section.objects.filter(user=user.user)
         context_dict['sections'] = {}
 
@@ -76,6 +76,21 @@ def profile(request, user_name_slug):
         return render(request, 'web_app/missing_content.html', context_dict)
 
     
+def post(request, posts_pid_slug):
+    context_dict={}
+    try:
+        post = Posts.objects.get(slug=posts_pid_slug)
+        context_dict['post'] = post
+
+        tags = PostTags.objects.filter(post=post)
+        context_dict['tags']=tags 
+
+        return render(request, 'web_app/post.html', context_dict)
+
+    except Posts.DoesNotExist:
+        context_dict['item'] = ''.join(('Post with ID:, ', posts_pid_slug, ','))
+        return render(request, 'web_app/missing_content.html', context_dict)
+
 
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)

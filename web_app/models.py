@@ -71,6 +71,11 @@ class Posts(models.Model):
     description = models.CharField(max_length=512)
     likes = models.IntegerField(default=0)
 
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.pid)
+        super(Posts, self).save(*args, **kwargs)
     
     def __str__(self):
         string = ''.join((self.title,"_",str(self.pid)))
