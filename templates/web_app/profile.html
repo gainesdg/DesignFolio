@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html>
+<body>
+
+<!-- *** PROFILE *** -->
+
+<!-- Username-->
+<h2> {{username}} </h2>
+
+<!-- Profile Picture-->
+<!-- draft copied and altered from rango
+<img src="{% static 'profile_pictures/username.jpg' %}" alt= "profile_picture" />
+-->
+
+<!-- Location-->
+<div>
+	Location: {{location}}
+</div>
+
+<!-- Bio-->
+<div>
+	Bio: {{bio}}
+</div>
+
+<!-- Available-->
+ 
+<!--if available
+		show checkmark
+		show email -->
+<div>
+
+	{{available}} <br>
+	{% if user.available %} <!-- check user profile available boolean field -->
+		{% if user.is_authenticated %} <!-- check the user is logged in to view email -->
+			{{email}}
+		{% else %}
+			Log in to get contact details
+		{% endif %}
+	{% endif %}
+	
+</div>
+		
+<!-- Links -->
+		
+	{% for site, link in links.items %}
+		<li><a href="{{link}}">{{site}}</a></li>
+	{% endfor %}
+		
+<!-- Portfolio Title -->
+<hr>
+<h2> P O R T F O L I O </h2>
+<div>
+	{% if user.is_authenticated %}
+		<!-- if user is on their own profile page -->
+		Add Section
+		Add Post
+	{% endif %}
+</div>
+
+		
+<!-- *** PROFESSIONS FILTER COLUMN *** -->
+
+
+<!-- *** SECTIONS AND POSTS *** -->
+<hr>
+
+<div>
+	<!-- loop through dictionary of key section and value posts in that section-->
+	{% for section, posts in sections.items %}
+		<!-- output section name -->
+		{{section}} <br>
+		{% for post in posts %} <!-- loop through posts in this section -->
+			<!-- post attrbutes -->
+			<pre>
+			Title:{{post.title}} <br>
+			Description: {{post.description}} <br>
+			Likes: {{post.likes}}
+			</pre>
+		{% endfor %}
+	{% endfor %}
+</div>
+
+</body>
