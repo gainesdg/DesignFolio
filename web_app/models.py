@@ -22,20 +22,15 @@ class UserProfile(models.Model):
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
     
     slug = models.SlugField(unique=True)
-
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(User, self).save(*args, **kwargs)
-
     def __str__(self):
         return self.user_name
-
-
 class Section(models.Model):
     section_id = models.AutoField(unique=True)
     name = models.CharField(max_length=128)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
     def __str__(self):
         return self.user_name
 """
@@ -56,8 +51,6 @@ class Posts(models.Model):
     descriptiuon = models.CharField(max_length=512)
     likes = models.IntegerField(default=0)
     tags = models.ManyToManyField(Tags)
-
     def __str__(self):
         return self.user.username
-
 """
