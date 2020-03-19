@@ -38,21 +38,25 @@ def populate():
         'Joe':{'location':'Pembrokeshire',
             'bio':'I like games and stuff',
             'profession':'Artist',
-            'available':True,
-            'link1':'',
-            'link2':'',
-            'link3':''
+            'available':True
         },
         'Tan':{'location':'London',
             'bio':'CS student at University of Glasgow',
             'profession':'Graphic Designer',
             'available':False,
-            'link1':'',
-            'link2':'',
-            'link3':''
-
         }
 
+    }
+
+    links = {
+        'Joe':{
+            'instagram':'https://www.instagram.com/',
+            'art station':'https://www.artstation.com/'
+        },
+        'Tan':{
+            'facebook':'https://www.facebook.com/'
+
+        }
     }
 
     sections = {
@@ -87,10 +91,10 @@ def populate():
         d = add_profile(u,  profile[user]['location'],
                             profile[user]['bio'],
                             profile[user]['profession'],
-                            profile[user]['available'],
-                            profile[user]['link1'],
-                            profile[user]['link2'],
-                            profile[user]['link3'])
+                            profile[user]['available'])
+        
+        for site, link in links[user].items(): #loop through links
+            l = add_link(u, site, link)
         
         for section_name, posts in sections[user].items(): #loop through sections for user
             s = add_section(section_name, u)
@@ -118,8 +122,10 @@ def populate():
     print('\nAdded Users:')
     for u in User.objects.all():
         print(f'- {u}')
+        for l in UserLinks.objects.filter(user=u):
+            print(f'  -Link: {l}')
         for s in Section.objects.filter(user=u):
-            print(f'\t- {s}')
+            print(f'  -Section: {s}')
             for p in Posts.objects.filter(section=s):
                 print(f'\t\t- {p}')
                 for t in PostTags.objects.filter(post=p):
@@ -141,15 +147,22 @@ def add_user(username, email, password):
     u.save()
     return u
 
-def add_profile(user, location, bio, profession, available, l1, l2, l3):
+def add_profile(user, location, bio, profession, available):
 
     profession = Profession.objects.get(name=profession)
-    u = UserProfile.objects.get_or_create(user=user, profession=profession, link1=l1, link2=l2, link3=l3)[0]
+    u = UserProfile.objects.get_or_create(user=user, profession=profession)[0]
     u.location=location
     u.bio=bio
     u.available=available
     u.save()
     return u
+
+def add_link(user, sitename, link):
+    l = UserLinks.objects.get_or_create(user=user, link=link)[0]
+    l.site_name=sitename
+    l.save()
+    return l
+
 
 def add_section(name, user):
     s = Section.objects.get_or_create(name=name, user=user)[0]

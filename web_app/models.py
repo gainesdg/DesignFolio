@@ -68,7 +68,7 @@ class Posts(models.Model):
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE, null=True)
     picture = models.ImageField(upload_to='post_images', blank=True)
     title = models.CharField(max_length=128)
-    descriptiuon = models.CharField(max_length=512)
+    description = models.CharField(max_length=512)
     likes = models.IntegerField(default=0)
 
     

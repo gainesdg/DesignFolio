@@ -7,58 +7,75 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from web_app.models import *
-# Create your views here.
 
+#Display the home page
 def index(request):
     professions_list = Profession.objects.all()
     context_dict={}
     context_dict['professions']= professions_list
     return render(request, 'web_app/index.html', context_dict)
 
+#Display the professions page
 def profession(request, profession_name_slug):
     context_dict = {}
 
     try:
-
+        #Get the profession that matches the profession in the URL
         profession = Profession.objects.get(slug=profession_name_slug)
         tags = Tags.objects.filter(profession=profession)
         
         context_dict['tags'] = tags
         context_dict['profession'] = profession
+
+        return render(request, 'web_app/profession.html', context_dict)
+
     except Profession.DoesNotExist:
-        context_dict['profession'] = "Profession not found."
-        context_dict['tags'] = None
-    return render(request, 'web_app/profession.html', context_dict)
+        #If the url does not have an existing profession show an error page
+        context_dict['item'] = ''.join(('Profession, ', profession_name_slug, ','))
+        return render(request, 'web_app/missing_content.html', context_dict)
 
-
+#Display the Profile Page
 def profile(request, user_name_slug):
     context_dict = {}
     try:
+        #Get the user that matches the user slug in the URL
         user = UserProfile.objects.get(slug=user_name_slug)
 
+        #add user info to context dictionary
         context_dict['username'] = user.user.username
         context_dict['location'] = user.location
         context_dict['bio'] = user.bio
+        #if user is available, add the "Available" message and their email
         if user.available:
-            avail = ''.join(("Available\n",user.user.email))
-            context_dict['available'] = avail
+            context_dict['available'] = "Available"
+            context_dict['email'] = user.user.email
         else:
             context_dict['available'] = "Not Available"
+            context_dict['email'] = ''
         
+        #add the users external links
         links = UserLinks.objects.filter(user=user.user)
-        context_dict['links'] = {}
+        context_dict['links'] = {} 
+        #dictionary of key, site name, and value, URL
         for link in links:
             context_dict['links'][link.site_name] = link.link
 
+        #Add the sections and posts within the sections
+        sections = Section.objects.filter(user=user.user)
+        context_dict['sections'] = {}
 
-    except Profession.DoesNotExist:
-        context_dict['username'] = "User not found."
-        context_dict['location'] = None
-        context_dict['bio'] = None
-        context_dict['available'] = None
+        for section in sections:
+            posts = Posts.objects.filter(section = section)
+            context_dict['sections'][section.name]=posts
+    
+        return render(request, 'web_app/profile.html', context_dict)
 
-    return render(request, 'web_app/profile.html', context_dict)
+    #If the URL contains a user name that does not exist show error page
+    except UserProfile.DoesNotExist:
+        context_dict['item'] = ''.join(('User, ', user_name_slug, ','))
+        return render(request, 'web_app/missing_content.html', context_dict)
 
+    
 
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
