@@ -50,10 +50,18 @@ class UserLinks(models.Model):
 
 >>>>>>> c21113eaa9473e89bbf344fc48be4b4e86a58c2c
 class Section(models.Model):
-    name = models.CharField(max_length=128, unique=True)
+    name = models.CharField(max_length=128)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+<<<<<<< HEAD
+=======
+
+    class Meta:
+        unique_together = (('name', 'user'))
+        
+>>>>>>> 25640ae6316099d41dd9d11346d5c13d2cddb92f
     def __str__(self):
         return self.name
+
 
 
 class Tags(models.Model):

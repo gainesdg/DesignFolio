@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html>
+<body>
+
+	<form id="add_post_form" method="post" action="/design-grid/"><!--post/{{ post.slug }}">-->
+		{% csrf_token %} <!---protects information passed during hidden post -->
+		{% for hidden in form.hidden_fields %}
+			{{ hidden }}
+		{% endfor %}
+		
+		{% for field in form.visible_fields %}
+			{{ field.errors }}
+			{{ field.help_text }}
+			{{ field }}
+			<br>
+		{% endfor %}
+		<input type="submit" name="submit" value="Create Post" />
+	</form>
+	
+	
+</html>
+</body>
