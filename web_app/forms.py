@@ -12,9 +12,11 @@ class UserForm(forms.ModelForm):
         fields = ('username', 'email', 'password',)
 
 class UserProfileForm(forms.ModelForm):
+    profession = forms.ModelChoiceField(queryset=Profession.objects.all())
+    
     class Meta:
         model = UserProfile
-        fields = ('picture','location','bio','available', 'profession')
+        fields = ('profession',)#('picture','location','bio','available', 'profession')
 
 
 class CreatePostForm(forms.ModelForm):

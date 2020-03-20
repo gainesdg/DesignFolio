@@ -7,7 +7,7 @@
 <h1>Register for Design Grid</h1>
 {% if registered %}
 	<strong>thank you for registering!</strong>
-	<a href="{% url 'web_app:index' %}">Return to the homepage.</a><br />
+	<a href="{% url 'design-grid:index' %}">Return to the homepage.</a><br />
 {% else %}
 	<strong>register here!</strong><br />
 	<form id="user_form" method="post" action="{% url 'design-grid:register' %}"16 enctype="multipart/form-data">

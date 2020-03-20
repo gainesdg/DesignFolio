@@ -30,8 +30,8 @@ class UserProfile(models.Model):
 
     #Create slug to display unique model attribute for URLs
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(User, self).save(*args, **kwargs)
+        self.slug = slugify(self.user.username)
+        super(UserProfile, self).save(*args, **kwargs)
     
     #String to display model appropriately when called
     def __str__(self):

@@ -185,11 +185,9 @@ def register(request):
             user.set_password(user.password)
             user.save()
 
+            #include profession and link user to user profile
             profile = profile_form.save(commit=False)
             profile.user = user
-
-            if 'picture' in request.FILES:
-                profile.picture = request.FILES['picture']
 
             profile.save()
             registered = True
@@ -199,7 +197,7 @@ def register(request):
         user_form = UserForm()
         profile_form = UserProfileForm()
 
-    return render(request, 'web_app/register.html', context={'user_form': user_form, 'profile_form': profile_form,\
+    return render(request, 'web_app/register.html', context={'user_form': user_form, 'profile_form': profile_form,
                                                            'registered': registered})
 
 
