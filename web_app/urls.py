@@ -5,6 +5,7 @@ app_name = 'design-grid'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('index', views.index, name='index'),
 
     path('profession/<slug:profession_name_slug>/', views.profession, name='profession'),
     path('user/<slug:user_name_slug>/', views.profile, name = 'profile'),
