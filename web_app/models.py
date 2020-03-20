@@ -25,6 +25,7 @@ class UserProfile(models.Model):
     available = models.BooleanField(default=False)
 
     slug = models.SlugField(unique=True)
+    
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(User, self).save(*args, **kwargs)

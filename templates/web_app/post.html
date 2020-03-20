@@ -1,21 +1,26 @@
-<!DOCTYPE html>
+{% extends 'web_app/base.html' %}
 {% load staticfiles %}
-<html>
-<body>
+
+{% block title_block %}
+	Homepage
+{% endblock %}
+
+{% block body_block %}
 
 <div>
-	<!-- Image:
-	<img src="{{ MEDIA_URL }}{{post.pid}}.jpg" alt="Post Image." /> -->
+	<!-- Image: -->
+	<img src="{{ MEDIA_URL }}{{post.picture}}" alt="post_image." /><br>
 	Title: {{post.title}} <br>
 	Description: {{post.description}} <br>
 	Likes: {{post.likes}} <br>
 	
 	Tags: 
 	{% for tag in tags %}
-		{{tag}}
+		{{tag}},
 	{% endfor %}
+	<br>
+	User: <a href="{% url 'design-grid:profile' profile.slug %}">{{profile}}</a>
 	
 </div>
 
-</body>
-</html>
+{% endblock %}

@@ -73,7 +73,8 @@
 				<img src="{{ MEDIA_URL }}{{post.picture}}" alt="post_image." />
 				Title:{{post.title}} <br>
 				Description: {{post.description}} <br>
-				Likes: {{post.likes}}
+				Likes: {{post.likes}}<br>
+				<a href="{% url 'design-grid:post' post.pid %}">View Post</a>
 				</pre>
 			{% endfor %}
 		{% endfor %}

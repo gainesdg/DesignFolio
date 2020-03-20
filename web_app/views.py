@@ -87,10 +87,14 @@ def post(request, posts_pid_slug):
         tags = PostTags.objects.filter(post=post)
         context_dict['tags']=tags 
 
+        user = post.section.user
+        profile = UserProfile.objects.get(user=user)
+        context_dict['profile']=profile
+
         return render(request, 'web_app/post.html', context_dict)
 
     except Posts.DoesNotExist:
-        context_dict['item'] = ''.join(('Post with ID:, ', posts_pid_slug, ','))
+        context_dict['item'] = ''.join(('Post with ID: ', posts_pid_slug, ','))
         return render(request, 'web_app/missing_content.html', context_dict)
 
 
