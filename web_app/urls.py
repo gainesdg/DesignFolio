@@ -13,6 +13,8 @@ urlpatterns = [
 
     path('create-post/', views.add_post, name='add_post'),
     path('add-section/', views.add_section, name='add_section'),
+
+    path('edit_profile/', views.edit_profile, name='edit_profile'),
     
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),

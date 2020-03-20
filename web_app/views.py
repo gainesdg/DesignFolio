@@ -11,6 +11,7 @@ from web_app.forms import *
 
 #Display the home page
 def index(request):
+    #List every profession in database
     professions_list = Profession.objects.all()
     context_dict={}
     context_dict['professions']= professions_list
@@ -22,10 +23,12 @@ def profession(request, profession_name_slug):
 
     try:
         #Get the profession that matches the profession in the URL
+        #Get the tags and posts related to this profession
         profession = Profession.objects.get(slug=profession_name_slug)
         tags = Tags.objects.filter(profession=profession)
         posts = Posts.objects.filter(profession=profession)
         
+        #store relevant tags and professions
         context_dict['tags'] = tags
         context_dict['profession'] = profession
         context_dict['posts'] = posts
@@ -53,10 +56,10 @@ def profile(request, user_name_slug):
             context_dict['available'] = "Not Available"
             context_dict['email'] = ''
         
-        #add the users external links
+        #add the users external links e.g instagram or facebook
         links = UserLinks.objects.filter(user=user.user)
         context_dict['links'] = {} 
-        #dictionary of key, site name, and value, URL
+        #dictionary of key: site name, and value: URL
         for link in links:
             context_dict['links'][link.site_name] = link.link
 
@@ -68,6 +71,7 @@ def profile(request, user_name_slug):
             posts = Posts.objects.filter(section = section)
             context_dict['sections'][section.name]=posts
 
+        #Boolean to check if the user is viewing their own page
         context_dict['owner'] = (user.user == request.user)
 
         return render(request, 'web_app/profile.html', context_dict)
@@ -81,18 +85,22 @@ def profile(request, user_name_slug):
 def post(request, posts_pid_slug):
     context_dict={}
     try:
+        #Find the post with the matching ID in the URL
         post = Posts.objects.get(slug=posts_pid_slug)
         context_dict['post'] = post
 
+        #Get the tags of this post
         tags = PostTags.objects.filter(post=post)
         context_dict['tags']=tags 
 
+        #Find the creater of the post. Section has attribute user, post has attribute section
         user = post.section.user
         profile = UserProfile.objects.get(user=user)
         context_dict['profile']=profile
 
         return render(request, 'web_app/post.html', context_dict)
 
+    #If the URL containing the post ID does not exist, show error page
     except Posts.DoesNotExist:
         context_dict['item'] = ''.join(('Post with ID: ', posts_pid_slug, ','))
         return render(request, 'web_app/missing_content.html', context_dict)
@@ -155,6 +163,11 @@ def add_section(request):
     # Will handle the bad form, new form, or no form supplied cases.
     # Render the form with error messages (if any).
     return render(request, 'web_app/add_post.html', {'form': form})
+
+
+@login_required
+def edit_profile(request):
+    return HttpResponse(request, 'EDIT PROFILE')
 
 
 def register(request):

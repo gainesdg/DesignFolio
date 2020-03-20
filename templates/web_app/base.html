@@ -23,7 +23,12 @@
 	<body>
 		<!-- NAV BAR -->
 		<ul  class="navbar">
-			<li><a href=login.html>Login<i></i></a></li>
+		
+			<li class="logo">DesignGrid</li>
+			<!-- Link to home page -->
+			<li><a href={% url 'design-grid:index' %}>Home</a></li>
+			
+			<!-- Link to professions pages -->
 			<li class="dropdown">
 				<a class="dropbtn">Professions<i></i></a>
 					<div class="dropdown-content">
@@ -32,8 +37,27 @@
 						{% endfor %}
 					</div>
 			</li>
-			<li><a href={% url 'design-grid:index' %}>Home</a></li>
-			<li class="logo">DesignGrid</li>
+			
+			<!-- Login/ Logout Menu -->
+			
+			{% if user.is_authenticated %}
+				<li class="dropdown">
+					<a class="dropbtn">My Profile<i></i></a>
+						<div class="dropdown-content">
+							<a href="{% url 'design-grid:edit_profile' %}">Edit Profile</a>
+							<a href="{% url 'design-grid:logout' %}">Logout</a>
+						</div>
+				</li>
+			{% else %}
+				<li class="dropdown">
+					<a class="dropbtn">Log in<i></i></a>
+						<div class="dropdown-content">
+							<a href="{% url 'design-grid:login' %}">Log in</a>
+							<a href="{% url 'design-grid:register' %}">Sign up</a>
+						</div>
+				</li>
+			{% endif %}
+			
 		</ul>
 		
 		<!-- TEMPLATE CONTENTS -->
