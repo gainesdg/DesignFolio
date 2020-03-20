@@ -24,9 +24,11 @@ def profession(request, profession_name_slug):
         #Get the profession that matches the profession in the URL
         profession = Profession.objects.get(slug=profession_name_slug)
         tags = Tags.objects.filter(profession=profession)
+        posts = Posts.objects.filter(profession=profession)
         
         context_dict['tags'] = tags
         context_dict['profession'] = profession
+        context_dict['posts'] = posts
 
         return render(request, 'web_app/profession.html', context_dict)
 
