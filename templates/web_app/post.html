@@ -2,14 +2,14 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	Homepage
+	Post
 {% endblock %}
 
 {% block body_block %}
 
 <div>
 	<!-- Image: -->
-	<img src="{{ MEDIA_URL }}{{post.picture}}" alt="post_image." /><br>
+	<img src="{{MEDIA_URL}}{{post.picture}}" alt="post_image." /><br>
 	Title: {{post.title}} <br>
 	Description: {{post.description}} <br>
 	Likes: {{post.likes}} <br>

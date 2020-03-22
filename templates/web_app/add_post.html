@@ -6,11 +6,11 @@
 
 	<form id="add_post_form" method="post" action="/design-grid/"><!--post/{{ post.slug }}">-->
 		{% csrf_token %} <!---protects information passed during hidden post -->
-		{% for hidden in form.hidden_fields %}
+		{% for hidden in post_form.hidden_fields %}
 			{{ hidden }}
 		{% endfor %}
 		
-		{% for field in form.visible_fields %}
+		{% for field in post_form.visible_fields %}
 			{{ field.errors }}
 			{{ field.help_text }}
 			{{ field }}

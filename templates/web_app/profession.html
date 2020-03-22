@@ -25,7 +25,7 @@
 		{% for post in posts %}
 		<li class="flex-item-b">
 
-			<img src="{{ MEDIA_URL }}{{post.picture}}" alt="post_image." /><br>
+			<img src="{{MEDIA_URL}}{{post.picture}}" alt="post_image." /><br>
 			{{post.title}} <br>
 			Likes: {{post.likes}}<br>
 			<a href="{% url 'design-grid:post' post.pid %}">View Post</a>

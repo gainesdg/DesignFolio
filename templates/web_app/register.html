@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	Homepage
+	Register
 {% endblock %}	
 
 
@@ -13,7 +13,6 @@
 		<strong>thank you for registering!</strong>
 		<a href="{% url 'design-grid:index' %}">Return to the homepage.</a><br />
 	{% else %}
-		<strong>register here!</strong><br />
 		<form id="user_form" method="post" action="{% url 'design-grid:register' %}"16 enctype="multipart/form-data">
 
 		{% csrf_token %}

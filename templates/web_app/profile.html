@@ -14,7 +14,7 @@
 	<h3> {{profile.user.username}} </h3>
 
 	<!-- Profile Picture:-->
-	<img src="{{ MEDIA_URL }}{{user.picture}}" alt="profile_picture." />
+	<img src="{{MEDIA_URL}}{{ profile.picture }}" alt="profile_picture." />
 
 	<!-- Location-->
 	<div>
@@ -70,7 +70,7 @@
 			{% for post in posts %} <!-- loop through posts in this section -->
 				<!-- post attrbutes -->
 				<pre>
-				<img src="{{ MEDIA_URL }}{{post.picture}}" alt="post_image." />
+				<img src="{{MEDIA_URL}}{{post.picture}}" alt="post_image." />
 				Title:{{post.title}} <br>
 				Description: {{post.description}} <br>
 				Likes: {{post.likes}}<br>

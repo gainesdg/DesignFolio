@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load staticfiles %}
+{% load designgrid_template_tags %}
 
 <html>
 
@@ -32,9 +33,11 @@
 			<li class="dropdown">
 				<a class="dropbtn">Professions<i></i></a>
 					<div class="dropdown-content">
+
 						{% for profession in professions %}
 							<a href="{% url 'design-grid:profession' profession.slug %}">{{profession.name}}</a>
 						{% endfor %}
+					
 					</div>
 			</li>
 			
@@ -44,7 +47,7 @@
 				<li class="dropdown">
 					<a class="dropbtn">My Profile<i></i></a>
 						<div class="dropdown-content">
-							<a href="{% url 'design-grid:profile' user%}">My Profile</a>
+							<a href="{% url 'design-grid:profile' user.userprofile.slug %}">My Profile</a>
 							<a href="{% url 'design-grid:edit_profile' %}">Edit Profile</a>
 							<a href="{% url 'design-grid:logout' %}">Logout</a>
 						</div>

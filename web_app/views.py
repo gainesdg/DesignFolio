@@ -107,8 +107,6 @@ def post(request, posts_pid_slug):
 
 
 
-
-
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
     if not val:
@@ -118,16 +116,19 @@ def get_server_side_cookie(request, cookie, default_val=None):
 
 @login_required
 def add_post(request):        
-    form = CreatePostForm()
+    post_form = CreatePostForm(instance=request.user)
+    #tags_form = PostTagsForm(instance=post_form)
     
     if request.method == 'POST':
-        user = User.objects.get(username=request.user)
-        form = CreatePostForm(user, request.POST)
-    
+
+        post_form = CreatePostForm(request.POST, instance=request.user)
+        #tags_form = PostTagsForm(request.POST)
         # Have we been provided with a valid form?
-        if form.is_valid():
+        if post_form.is_valid():
             # Save the new post to the database.
-            form.save(commit=True)
+            post_form.save(commit=True)
+            if 'picture' in request.FILES:
+                post_form.picture = request.FILES['picture']
             
             post_pid_slug = Posts.objects.get(section=Section.objects.get(user=user)).slug
             return redirect(reverse('design-grid:post', kwargs={'posts_pid_slug': posts_pid_slug } ))
@@ -138,15 +139,15 @@ def add_post(request):
             
     # Will handle the bad form, new form, or no form supplied cases.
     # Render the form with error messages (if any).
-    return render(request, 'web_app/add_post.html', {'form': form})
+    return render(request, 'web_app/add_post.html', {'post_form': post_form})
 
 @login_required
 def add_section(request):
     form = CreateSectionForm()
     
     if request.method == 'POST':
-        user = User.objects.get(username=request.user)
-        form = CreatePostForm(user, request.POST)
+
+        form = CreatePostForm(request.POST, instance=request.user)
     
         # Have we been provided with a valid form?
         if form.is_valid():
@@ -167,7 +168,33 @@ def add_section(request):
 
 @login_required
 def edit_profile(request):
-    return HttpResponse(request, 'EDIT PROFILE')
+    saved = False
+
+    if request.method == 'POST':
+
+        user_profile = UserProfile.objects.get(user=request.user)
+        profile_form = EditProfileForm(request.POST, instance=user_profile)
+
+        if profile_form.is_valid():
+
+            #include profession and link user to user profile
+            profile = profile_form.save(commit=False)
+            profile.user = request.user
+
+            if 'picture' in request.FILES:
+                profile.picture = request.FILES['picture']
+            
+            profile.save()
+            
+            
+            saved = True
+        else:
+            print(profile_form.errors)
+    else:
+        profile_form = EditProfileForm(instance=request.user)
+
+    return render(request, 'web_app/edit_profile.html', context={'profile_form': profile_form,
+                                                           'saved': saved})
 
 
 def register(request):

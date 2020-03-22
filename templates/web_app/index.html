@@ -16,7 +16,7 @@
 		{% for profession in professions %}
 		<li class="flex-item-b">
 
-			{{profession.name}}
+			<a href="{% url 'design-grid:profession' profession.slug %}">{{profession.name}}</a>
 		</li>
 		{% endfor %}
 		
