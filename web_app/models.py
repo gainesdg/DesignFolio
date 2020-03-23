@@ -41,17 +41,17 @@ class UserLinks(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     site_name = models.CharField(max_length=32)
     link = models.URLField(unique=True)
-
+    
     #String to display model appropriately when called
     def __str__(self):
         return self.site_name
 
 
 class Section(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    #Create slug to display unique model attribute for URLs
+    #Create slug to display unique model attribute
     class Meta:
         unique_together = (('name', 'user'))
  
@@ -82,14 +82,7 @@ class Posts(models.Model):
     title = models.CharField(max_length=128)
     description = models.CharField(max_length=512)
     likes = models.IntegerField(default=0)
-
-    slug = models.SlugField(unique=True)
-
-    #Create slug to display unique model attribute for URLs
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.pid)
-        super(Posts, self).save(*args, **kwargs)
-    
+        
     #String to display model appropriately when called
     def __str__(self):
         string = ''.join((self.title,"_",str(self.pid)))

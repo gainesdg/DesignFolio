@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 from django.contrib.auth import authenticate, login, logout
 
+#Enter user details
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
 
@@ -11,13 +12,17 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('first_name', 'last_name', 'username', 'email', 'password',)
 
+#Enter profile profession for initial sign up
 class UserProfileForm(forms.ModelForm):
+
     profession = forms.ModelChoiceField(queryset=Profession.objects.all())
     
     class Meta:
         model = UserProfile
-        fields = ('profession',)#('picture','location','bio','available', 'profession')
+        fields = ('profession',)
+        exclude = ('picture','location','bio','available')
 
+#Edit the user profile
 class EditProfileForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
@@ -25,17 +30,13 @@ class EditProfileForm(forms.ModelForm):
 
         user = kwargs.get('instance')
         if user:
-            kwargs['instance'] = user
+            #Set the initial values of each field to what the users profile
+            #is currently looking like
+            self.fields['picture'].initial = user.picture
+            self.fields['location'].initial = user.location
+            self.fields['bio'].initial = user.bio
+            self.fields['available'].initial = user.available
 
-        self.user_form = UserProfileForm(*args, **kwargs)
-
-        self.fields.update(self.user_form.fields)
-        self.initial.update(self.user_form.initial)
-
-    def save(self, *args, **kwargs):
-        self.user_form.save(*args, **kwargs)
-        return super(EditProfileForm, self).save(*args, **kwargs)
-    
     location = forms.CharField(required=False)
 
     class Meta:
@@ -43,72 +44,65 @@ class EditProfileForm(forms.ModelForm):
         exclude = ('user','profession','slug')
         fields = ('location','bio','picture','available')
 
-
+#Create a post
 class CreatePostForm(forms.ModelForm):
     
     def __init__(self,*args,**kwargs):
-        super (CreatePostForm,self ).__init__(*args,**kwargs) # populates the post
-        user = kwargs.get('instance')
+        user = kwargs.pop('user')
+        super (CreatePostForm,self ).__init__(*args,**kwargs)
 
-        try:
-            print(user)
+        if user:
             self.fields['section'].queryset = Section.objects.filter(user=user)
             self.fields['section'].help_text = "Section"
-            self.fields['profession'] = UserProfile.objects.get(user=user).profession
-        except Exception as e:
-            print('e',e)
-
 
     title = forms.CharField(max_length=128, help_text="Title")
     description = forms.CharField(max_length=512, help_text="Description")
     likes = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     
-
     class Meta:
         model = Posts
         fields = ('picture', 'section', 'title', 'description')
+        exclude = ('profession',)
 
-"""
-class PostTagsForm(forms.ModelForm):
+#Checkbox menu to specify what tags to include when creating a post
+class IncludeTagForm(forms.ModelForm):
 
     def __init__(self,*args,**kwargs):
-        super (CreatePostForm,self ).__init__(*args,**kwargs) # populates the post
-        post = kwargs.get('instance')
-        self.field['post'] = post
+        tag = kwargs.get('instance')
+        super (IncludeTagForm,self ).__init__(*args,**kwargs)
 
-    Countries = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
-                                          choices=post.profession)
+        if tag:
+            self.fields['tag'] = tag
+
+    checkbox = forms.BooleanField()
 
     class Meta:
         model = PostTags
         fields = ('tag',)
-"""
 
-
+#Create a section for the user
 class CreateSectionForm(forms.ModelForm):
-    def __init__(self,*args,**kwargs):
-        super (CreateSectionForm,self ).__init__(*args,**kwargs) # populates the post
-        user = kwargs.get('instance')
 
-        self.fields['user'] = user
-
-    name = forms.CharField(max_length=128, help_text="Name")
+    name = forms.CharField(max_length=64, help_text="Name")
 
     class Meta:
         model = Section
         fields = ('name',)
+        exclude = ('user',)
 
 
-"""
+#Add a link to the user profile
 class UserLinksForm(forms.ModelForm):
-
-    def __init__(self,*args,**kwargs):
-        super (CreatePostForm,self ).__init__(*args,**kwargs) # populates the post
-        user = kwargs.get('instance')
-        self.field['user'] = user
 
     class Meta:
         model = UserLinks
         fields = ('site_name', 'link')
 
+"""
+class professionTagFilterForm(forms.ModelForm):
+    name = 
+
+    class Meta:
+        model = Tags
+        fields = ('name',)
 """

@@ -6,6 +6,8 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+from django.template.defaultfilters import slugify
+
 from web_app.models import *
 from web_app.forms import *
 
@@ -73,6 +75,9 @@ def profile(request, user_name_slug):
 
         #Boolean to check if the user is viewing their own page
         context_dict['owner'] = (user.user == request.user)
+        #Boolean to check if the user has reached maximum of 5 links. If less than
+        #5 then they add link option will be available
+        context_dict['5links'] = (len(UserLinks.objects.filter(user=user.user))<5)
 
         return render(request, 'web_app/profile.html', context_dict)
 
@@ -81,12 +86,13 @@ def profile(request, user_name_slug):
         context_dict['item'] = ''.join(('User, ', user_name_slug, ','))
         return render(request, 'web_app/missing_content.html', context_dict)
 
-    
-def post(request, posts_pid_slug):
+
+#VIEW A POST AND ALL IT'S DETAILS 
+def post(request, posts_pid):
     context_dict={}
     try:
         #Find the post with the matching ID in the URL
-        post = Posts.objects.get(slug=posts_pid_slug)
+        post = Posts.objects.get(pid=posts_pid)
         context_dict['post'] = post
 
         #Get the tags of this post
@@ -102,7 +108,7 @@ def post(request, posts_pid_slug):
 
     #If the URL containing the post ID does not exist, show error page
     except Posts.DoesNotExist:
-        context_dict['item'] = ''.join(('Post with ID: ', posts_pid_slug, ','))
+        context_dict['item'] = ''.join(('Post with ID: ', posts_pid, ','))
         return render(request, 'web_app/missing_content.html', context_dict)
 
 
@@ -114,24 +120,51 @@ def get_server_side_cookie(request, cookie, default_val=None):
     return val
 
 
+#ADD A POST TO A SECTION IN THE USERS PROFILE
 @login_required
-def add_post(request):        
-    post_form = CreatePostForm(instance=request.user)
-    #tags_form = PostTagsForm(instance=post_form)
+def add_post(request):   
+    #Form for general post attributes.     
+    post_form = CreatePostForm(user=request.user)
+    
+    #Create a checkbox form. If the tag is checked, add a PostTags object (add the tags to the post)
+    tag_list = Tags.objects.filter(profession=request.user.userprofile.profession)
+    tag_form_list = []
+    for tag in enumerate(tag_list):
+        tag_form_list.append(IncludeTagForm(instance = tag))
     
     if request.method == 'POST':
 
-        post_form = CreatePostForm(request.POST, instance=request.user)
-        #tags_form = PostTagsForm(request.POST)
+        post_form = CreatePostForm(request.POST, user=request.user)
+
+        tag_list = Tags.objects.filter(profession=request.user.userprofile.profession)
+        tag_form_list = []
+        for tag in enumerate(tag_list):
+            tag_form_list.append(IncludeTagForm(instance = tag))
+        
         # Have we been provided with a valid form?
-        if post_form.is_valid():
-            # Save the new post to the database.
-            post_form.save(commit=True)
+        if post_form.is_valid() and all(tag_form.is_valid() for tag_form in tag_form_list):
+
+            #SAVE POST FORM
+            post = post_form.save(commit=False)
+            #set the profession to that of the user
+            post.profession = UserProfile.objects.get(user=request.user).profession
+
+            #save picture to appropriate location
             if 'picture' in request.FILES:
                 post_form.picture = request.FILES['picture']
-            
-            post_pid_slug = Posts.objects.get(section=Section.objects.get(user=user)).slug
-            return redirect(reverse('design-grid:post', kwargs={'posts_pid_slug': posts_pid_slug } ))
+            #save to database
+            post.save()
+
+            #SAVE TAG FORMS
+            for tag_form in tag_form_list:
+                tag = tag_form.save(commit=False)
+                if tag.checkbox:
+                    tag.user=request.user
+                    tag.save()
+
+
+            posts_pid=post.pid
+            return redirect(reverse('design-grid:post', kwargs={'posts_pid': posts_pid} ))
         else:
             # The supplied form contained errors -
             # just print them to the terminal.
@@ -139,64 +172,114 @@ def add_post(request):
             
     # Will handle the bad form, new form, or no form supplied cases.
     # Render the form with error messages (if any).
-    return render(request, 'web_app/add_post.html', {'post_form': post_form})
+    return render(request, 'web_app/add_post.html', {'post_form': post_form, 'tags_form':tags_form})
 
+
+#ADD A SECTION (WHICH CONTAINS POSTS) TO THE USERS PROFILE
 @login_required
 def add_section(request):
-    form = CreateSectionForm()
     
     if request.method == 'POST':
 
-        form = CreatePostForm(request.POST, instance=request.user)
+        form = CreateSectionForm(request.POST)
     
         # Have we been provided with a valid form?
         if form.is_valid():
-            # Save the new post to the database.
-            form.save(commit=True)
+            #Save the form but not to database
+            #set the user of the section to the current user
+            #save to database
+            section = form.save(commit=False)
+            section.user = request.user
+            section.save()
             
-            user_name_slug = UserProfile.objects.get(user=user).slug
+            #Redirect to the users profile page
+            user_name_slug = UserProfile.objects.get(user=request.user).slug
             return redirect(reverse('design-grid:profile', kwargs={'user_name_slug': user_name_slug } ))
         else:
             # The supplied form contained errors -
             # just print them to the terminal.
             print(form.errors)
-            
-    # Will handle the bad form, new form, or no form supplied cases.
-    # Render the form with error messages (if any).
-    return render(request, 'web_app/add_post.html', {'form': form})
+            return HttpResponse("Invalid form supplied. Do you already have a section with this name?")
+
+    else:
+        form = CreateSectionForm()
+        # Will handle the bad form, new form, or no form supplied cases.
+        # Render the form with error messages (if any).
+        return render(request, 'web_app/add_section.html', {'form': form})
 
 
+#MODIFY THE USERS PROFILE
 @login_required
 def edit_profile(request):
-    saved = False
+    saved = False #If saved, template will offer URL to move to profile page
 
     if request.method == 'POST':
-
+        #Pass the user profile as an instance.
+        #This informs the form what profile to edit
         user_profile = UserProfile.objects.get(user=request.user)
         profile_form = EditProfileForm(request.POST, instance=user_profile)
 
         if profile_form.is_valid():
 
-            #include profession and link user to user profile
             profile = profile_form.save(commit=False)
             profile.user = request.user
 
+            #Store the picture in MEDIA files
             if 'picture' in request.FILES:
                 profile.picture = request.FILES['picture']
             
             profile.save()
             
-            
+            #Inform the user in the template that the process is complete
+            #Template will offer URL to move to profile page
             saved = True
         else:
+            #Will produce errors if the form is not completed correctly
             print(profile_form.errors)
+            return HttpResponse("Invalid details supplied.")
     else:
-        profile_form = EditProfileForm(instance=request.user)
+        #Base form
+        user_profile = UserProfile.objects.get(user=request.user)
+        profile_form = EditProfileForm(instance=user_profile)
 
+    #Render the page
     return render(request, 'web_app/edit_profile.html', context={'profile_form': profile_form,
                                                            'saved': saved})
 
 
+#ADD A LINK TO THE USERS PROFILE
+@login_required
+def add_link(request):
+    if request.method == 'POST':
+
+        form = UserLinksForm(request.POST)
+    
+        # Have we been provided with a valid form?
+        if form.is_valid():
+            #Save the form but not to database
+            #set the user of the section to the current user
+            #save to database
+            link = form.save(commit=False)
+            link.user = request.user
+            link.save()
+            
+            #Redirect to the users profile page
+            user_name_slug = UserProfile.objects.get(user=request.user).slug
+            return redirect(reverse('design-grid:profile', kwargs={'user_name_slug': user_name_slug } ))
+        else:
+            # The supplied form contained errors -
+            # just print them to the terminal.
+            print(form.errors)
+            return HttpResponse("Invalid site details supplied. Someone has already claimed this URL.")
+
+    else:
+        form = UserLinksForm()
+        # Will handle the bad form, new form, or no form supplied cases.
+        # Render the form with error messages (if any).
+        return render(request, 'web_app/add_link.html', {'form': form})
+
+
+#REGISTER A NEW USER
 def register(request):
 
     registered = False
@@ -228,6 +311,7 @@ def register(request):
                                                            'registered': registered})
 
 
+#LOG IN AS AN EXISTING USER
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -255,6 +339,7 @@ def user_login(request):
         return render(request, 'web_app/login.html')
 
 
+#LOG OUT AND REDIRECT TO HOME PAGE
 @login_required
 def user_logout(request):
     logout(request)

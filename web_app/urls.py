@@ -9,12 +9,13 @@ urlpatterns = [
 
     path('profession/<slug:profession_name_slug>/', views.profession, name='profession'),
     path('user/<slug:user_name_slug>/', views.profile, name = 'profile'),
-    path('post/<slug:posts_pid_slug>/', views.post, name = 'post'),
+    path('post/<posts_pid>/', views.post, name = 'post'),
 
     path('create-post/', views.add_post, name='add_post'),
     path('add-section/', views.add_section, name='add_section'),
 
     path('edit_profile/', views.edit_profile, name='edit_profile'),
+    path('add-link/', views.add_link, name='add_link'),
     
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),

@@ -1,11 +1,18 @@
-<!DOCTYPE html>
+{% extends 'web_app/base.html' %}
 {% load staticfiles %}
 
-<html>
-<body>
+{% block title_block %}
+	Add Post
+{% endblock %}	
 
-	<form id="add_post_form" method="post" action="/design-grid/"><!--post/{{ post.slug }}">-->
+
+{% block body_block %}
+
+	<form id="add_post_form" method="post" action="{% url 'design-grid:add_post' %}"><!--post/{{ post.slug }}">-->
 		{% csrf_token %} <!---protects information passed during hidden post -->
+		
+		{{ section.as_p }}
+		
 		{% for hidden in post_form.hidden_fields %}
 			{{ hidden }}
 		{% endfor %}
@@ -16,9 +23,10 @@
 			{{ field }}
 			<br>
 		{% endfor %}
+		
+		{{ tags_form.as_p }}
+		
 		<input type="submit" name="submit" value="Create Post" />
 	</form>
 	
-	
-</html>
-</body>
+{% endblock %}

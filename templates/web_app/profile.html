@@ -11,7 +11,9 @@
 	<!-- *** PROFILE *** -->
 
 	<!-- Username-->
-	<h3> {{profile.user.username}} </h3>
+	<h3> @{{profile.user.username}} </h3>
+	<!-- Full Name -->
+	<h3> {{profile.user.first_name}} {{profile.user.last_name}} </h3>
 
 	<!-- Profile Picture:-->
 	<img src="{{MEDIA_URL}}{{ profile.picture }}" alt="profile_picture." />
@@ -46,6 +48,12 @@
 		{% for site, link in links.items %}
 			<li><a href="{{link}}">{{site}}</a></li>
 		{% endfor %}
+		
+		{% if owner %}
+			{% if 5links %} <!-- Max of 5 links -->
+				<li><a href="{% url 'design-grid:add_link' %}">Add Link</a></li>
+			{% endif %}
+		{% endif %}
 			
 	<!-- Portfolio Title -->
 	<hr>
