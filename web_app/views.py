@@ -71,7 +71,10 @@ def profile(request, user_name_slug):
 
         for section in sections:
             posts = Posts.objects.filter(section = section)
-            context_dict['sections'][section.name]=posts
+            context_dict['sections'][section.name]={}
+            for post in posts:
+                #create a dictionary containing the post and number of likes
+                context_dict['sections'][section.name][post]=len(PostLikes.objects.filter(post=post))
 
         #Boolean to check if the user is viewing their own page
         context_dict['owner'] = (user.user == request.user)
@@ -98,6 +101,8 @@ def post(request, posts_pid):
         #Get the tags of this post
         tags = PostTags.objects.filter(post=post)
         context_dict['tags']=tags 
+
+        context_dict['likes'] = len(PostLikes.objects.filter(post=post))
 
         #Find the creater of the post. Section has attribute user, post has attribute section
         user = post.section.user
@@ -126,23 +131,27 @@ def add_post(request):
     #Form for general post attributes.     
     post_form = CreatePostForm(user=request.user)
     
+    """
     #Create a checkbox form. If the tag is checked, add a PostTags object (add the tags to the post)
     tag_list = Tags.objects.filter(profession=request.user.userprofile.profession)
     tag_form_list = []
     for tag in enumerate(tag_list):
         tag_form_list.append(IncludeTagForm(instance = tag))
-    
+    """
+
     if request.method == 'POST':
 
-        post_form = CreatePostForm(request.POST, user=request.user)
+        post_form = CreatePostForm(request.POST, request.FILES, user=request.user)
 
+        """
         tag_list = Tags.objects.filter(profession=request.user.userprofile.profession)
         tag_form_list = []
         for tag in enumerate(tag_list):
             tag_form_list.append(IncludeTagForm(instance = tag))
-        
+        """
+
         # Have we been provided with a valid form?
-        if post_form.is_valid() and all(tag_form.is_valid() for tag_form in tag_form_list):
+        if post_form.is_valid():# and all(tag_form.is_valid() for tag_form in tag_form_list):
 
             #SAVE POST FORM
             post = post_form.save(commit=False)
@@ -151,28 +160,30 @@ def add_post(request):
 
             #save picture to appropriate location
             if 'picture' in request.FILES:
-                post_form.picture = request.FILES['picture']
+                post.picture = request.FILES['picture']
             #save to database
             post.save()
 
+            """
             #SAVE TAG FORMS
             for tag_form in tag_form_list:
                 tag = tag_form.save(commit=False)
                 if tag.checkbox:
                     tag.user=request.user
                     tag.save()
-
+            """
 
             posts_pid=post.pid
             return redirect(reverse('design-grid:post', kwargs={'posts_pid': posts_pid} ))
         else:
             # The supplied form contained errors -
             # just print them to the terminal.
-            print(form.errors)
+            print(post_form.errors)#,tags_form.errors)
+            return HttpResponse("Error whilst processing your request")
             
     # Will handle the bad form, new form, or no form supplied cases.
     # Render the form with error messages (if any).
-    return render(request, 'web_app/add_post.html', {'post_form': post_form, 'tags_form':tags_form})
+    return render(request, 'web_app/add_post.html', {'post_form': post_form,})# 'tags_form':tags_form})
 
 
 #ADD A SECTION (WHICH CONTAINS POSTS) TO THE USERS PROFILE

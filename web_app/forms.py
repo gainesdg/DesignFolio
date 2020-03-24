@@ -80,6 +80,7 @@ class IncludeTagForm(forms.ModelForm):
         model = PostTags
         fields = ('tag',)
 
+
 #Create a section for the user
 class CreateSectionForm(forms.ModelForm):
 

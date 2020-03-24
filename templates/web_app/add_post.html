@@ -8,7 +8,7 @@
 
 {% block body_block %}
 
-	<form id="add_post_form" method="post" action="{% url 'design-grid:add_post' %}"><!--post/{{ post.slug }}">-->
+	<form id="add_post_form" method="post" enctype="multipart/form-data" action="{% url 'design-grid:add_post' %}">
 		{% csrf_token %} <!---protects information passed during hidden post -->
 		
 		{{ section.as_p }}

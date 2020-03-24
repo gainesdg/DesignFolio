@@ -65,7 +65,7 @@ class Tags(models.Model):
     name = models.CharField(max_length=128)
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
 
-    #Create slug to display unique model attribute for URLs
+    #Ensure there are no duplicate tags under one profession
     class Meta:
         unique_together = (('name', 'profession'))
 
@@ -78,10 +78,9 @@ class Posts(models.Model):
     pid = models.AutoField(primary_key=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE, null=True)
-    picture = models.ImageField(upload_to='post_images', blank=True)
+    picture = models.ImageField(upload_to='post_images', blank=False)
     title = models.CharField(max_length=128)
     description = models.CharField(max_length=512)
-    likes = models.IntegerField(default=0)
         
     #String to display model appropriately when called
     def __str__(self):
@@ -96,3 +95,12 @@ class PostTags(models.Model):
     def __str__(self):
         return self.tag.name
 
+class PostLikes(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Posts, on_delete=models.CASCADE)
+
+    #Ensure User cannot like a post twice
+    class Meta:
+        unique_together = (('user', 'post'))
+
+    

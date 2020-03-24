@@ -75,13 +75,13 @@
 		{% for section, posts in sections.items %}
 			<!-- output section name -->
 			{{section}} <br>
-			{% for post in posts %} <!-- loop through posts in this section -->
+			{% for post, likes in posts.items %} <!-- loop through posts in this section -->
 				<!-- post attrbutes -->
 				<pre>
 				<img src="{{MEDIA_URL}}{{post.picture}}" alt="post_image." />
 				Title:{{post.title}} <br>
 				Description: {{post.description}} <br>
-				Likes: {{post.likes}}<br>
+				Likes: {{likes}}<br>
 				<a href="{% url 'design-grid:post' post.pid %}">View Post</a>
 				</pre>
 			{% endfor %}
