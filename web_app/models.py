@@ -20,7 +20,7 @@ class Profession(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    picture = models.ImageField(upload_to='profile_images', blank=True)
+    picture = models.ImageField(upload_to='profile_images', default='profile_images/default.png')
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE)
     location = models.CharField(max_length=32)
     bio = models.CharField(max_length=256)
@@ -103,4 +103,5 @@ class PostLikes(models.Model):
     class Meta:
         unique_together = (('user', 'post'))
 
-    
+class TagChecker(models.Model):
+    check = models.BooleanField(default=False)

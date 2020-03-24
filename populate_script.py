@@ -73,21 +73,21 @@ def populate():
             'available':True,
             },
         'Tan':{
-            'picture':None,
+            'picture':'profile_images/default.png',
             'location':'London',
             'bio':'Graphic Designer',
             'profession':'Graphic Designer',
             'available':True,
             },
         'Kam':{
-            'picture':None,
+            'picture':'profile_images/default.png',
             'location':'Glasgow',
             'bio':'Computer Science Student at the University of Glasgow',
             'profession':'Software Designer',
             'available':False,
             },
         'Dyl':{
-            'picture':None,
+            'picture':'profile_images/default.png',
             'location':'Calafornia',
             'bio':'US Transfer at Uni of Glasgow',
             'profession':'Interior Designer',
@@ -222,11 +222,17 @@ def populate():
         for tag in tags:
             add_tag(tag, p)
 
+    #add users
+    for user in users:
+        userDetails = users[user]
+        u = add_user(userDetails) #userDetails=dictionary of user details
+    
+    #add user profiles, posts and sections
     for user in users: #loop through names. These names identify users, profiles and links etc.
         userDetails = users[user]
         userProfile = profile[user]
 
-        u = add_user(userDetails) #dictionary of user details
+        u = add_user(userDetails) #get users for later population e.g likes
         p = add_profile(u, userProfile) #user object, dictionary of profile details
 
         for site, link in links[user].items():

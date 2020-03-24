@@ -7,6 +7,9 @@
 
 {% block body_block %}
 
+<!-- download jquery -->
+<header> <script src="https://code.jquery.com/jquery-3.4.1.min.js" type="text/javascript"></script> </header>
+
 <div>
 	<!-- Image: -->
 	<img src="{{MEDIA_URL}}{{post.picture}}" alt="post_image." /><br>
@@ -20,6 +23,10 @@
 	{% endfor %}
 	<br>
 	User: <a href="{% url 'design-grid:profile' profile.slug %}">{{profile}}</a>
+	<br>
+	<script src="{% static 'js/vote.js' %}"></script>
+	<input type="button" id="upvote" value="like" onclick="upvote"/>
+	
 	
 </div>
 

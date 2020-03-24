@@ -24,7 +24,12 @@
 			<br>
 		{% endfor %}
 		
-		{{ tags_form.as_p }}
+		Tags<br>
+		{% for tag, tag_form in tag_form_list.items %}
+			{% for field in tag_form %}
+				{{ field }}{{tag}}<br>
+			{% endfor %}
+		{% endfor %}
 		
 		<input type="submit" name="submit" value="Create Post" />
 	</form>

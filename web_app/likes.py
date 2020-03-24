@@ -9,7 +9,9 @@ def like(user, post):
         #if relationship exists (if liked, unlike)
         #unlike
         PostLikes.objects.remove(liked)
+        print(user,"liked",post)
 
     except: #if no relationship exists (if unliked, like)
         #like
         PostLikes.objects.get_or_create(user=user, post=post)
+        print(user,"unliked",post)

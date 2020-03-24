@@ -11,6 +11,8 @@ from django.template.defaultfilters import slugify
 from web_app.models import *
 from web_app.forms import *
 
+from web_app.likes import like
+
 #Display the home page
 def index(request):
     #List every profession in database
@@ -116,6 +118,40 @@ def post(request, posts_pid):
         context_dict['item'] = ''.join(('Post with ID: ', posts_pid, ','))
         return render(request, 'web_app/missing_content.html', context_dict)
 
+#UPVOTING A POST
+def upvote(request):
+    # We only accept GET requests from authenticated users.
+    # We also bypass authentication if the process is called from the population script.
+    if (type(request) != dict):
+        if (request.method != "GET"):
+            print("Not a GET.")
+            return render(request, 'post.html')
+
+        if (not request.user.is_authenticated):
+            print("Not authenticated.")
+            return render(request, 'web_app/post.html')
+
+    # We have the dict versus normal because the population script also uses the upvote
+    # function. Meanwhile the requests don't use dict.
+    if (type(request) == dict):
+        username = request['username']
+        pid = request['pid']
+    else:
+        username = request.user.username
+        pid = request.GET.get('pid', None)
+
+    # Get objects from database for the given parameters.
+    user = User.objects.get(username=username)
+    post = Post.objects.get(pid=pid)
+
+    #like or unlike the post
+    like(user, post)
+    
+    if (type(request) == dict):
+        return
+    else:
+        return render(request, 'web_app/post.html')
+
 
 
 def get_server_side_cookie(request, cookie, default_val=None):
@@ -131,27 +167,25 @@ def add_post(request):
     #Form for general post attributes.     
     post_form = CreatePostForm(user=request.user)
     
-    """
-    #Create a checkbox form. If the tag is checked, add a PostTags object (add the tags to the post)
+
+    #create a dictionary of forms, one for each tag that matches the users profession
     tag_list = Tags.objects.filter(profession=request.user.userprofile.profession)
-    tag_form_list = []
-    for tag in enumerate(tag_list):
-        tag_form_list.append(IncludeTagForm(instance = tag))
-    """
+    tag_form_list = {}
+    for tag in tag_list:
+        tag_form_list[tag] = IncludeTagForm()
+
 
     if request.method == 'POST':
 
         post_form = CreatePostForm(request.POST, request.FILES, user=request.user)
 
-        """
-        tag_list = Tags.objects.filter(profession=request.user.userprofile.profession)
-        tag_form_list = []
-        for tag in enumerate(tag_list):
-            tag_form_list.append(IncludeTagForm(instance = tag))
-        """
+        #create a dictionary of forms, one for each tag that matches the users profession
+        tag_form_list = {}
+        for tag in tag_list:
+            tag_form_list[tag] = IncludeTagForm(request.POST)
 
         # Have we been provided with a valid form?
-        if post_form.is_valid():# and all(tag_form.is_valid() for tag_form in tag_form_list):
+        if post_form.is_valid():
 
             #SAVE POST FORM
             post = post_form.save(commit=False)
@@ -164,14 +198,17 @@ def add_post(request):
             #save to database
             post.save()
 
-            """
             #SAVE TAG FORMS
-            for tag_form in tag_form_list:
-                tag = tag_form.save(commit=False)
-                if tag.checkbox:
-                    tag.user=request.user
-                    tag.save()
-            """
+            for tag, tag_form in tag_form_list.items():
+                #get each form
+                if tag_form.is_valid():
+                    include = tag_form.save(commit=False)
+                    print(include)
+                    print(include.check)
+                    if include.check: #see if the checkbox was ticked
+                        #if ticked, create a post tags object to say they included this tag
+                        post_tag = PostTags.objects.create(tag=tag, post=post)
+                        post_tag.save()
 
             posts_pid=post.pid
             return redirect(reverse('design-grid:post', kwargs={'posts_pid': posts_pid} ))
@@ -183,7 +220,7 @@ def add_post(request):
             
     # Will handle the bad form, new form, or no form supplied cases.
     # Render the form with error messages (if any).
-    return render(request, 'web_app/add_post.html', {'post_form': post_form,})# 'tags_form':tags_form})
+    return render(request, 'web_app/add_post.html', {'post_form': post_form, 'tag_form_list':tag_form_list})
 
 
 #ADD A SECTION (WHICH CONTAINS POSTS) TO THE USERS PROFILE
@@ -288,6 +325,29 @@ def add_link(request):
         # Will handle the bad form, new form, or no form supplied cases.
         # Render the form with error messages (if any).
         return render(request, 'web_app/add_link.html', {'form': form})
+
+
+#DISPLAY RESULTS OF SEARCH
+def search(request, argument):
+    context_dict={}
+    
+    context_dict['argument'] = argument
+    #list users with matching name
+    users= User.objects.filter(username__icontains=argument)
+    context_dict['users']= users
+    #list post with matching titles
+    posts = Posts.objects.filter(title__icontains=argument)
+    context_dict['posts']= posts
+    
+    return render(request, 'web_app/search.html', context_dict)
+
+
+def search_bar(request):
+    argument = ''
+
+    if 'search' in request.GET:
+        argument = request.GET['search']
+
 
 
 #REGISTER A NEW USER

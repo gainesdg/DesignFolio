@@ -67,19 +67,9 @@ class CreatePostForm(forms.ModelForm):
 #Checkbox menu to specify what tags to include when creating a post
 class IncludeTagForm(forms.ModelForm):
 
-    def __init__(self,*args,**kwargs):
-        tag = kwargs.get('instance')
-        super (IncludeTagForm,self ).__init__(*args,**kwargs)
-
-        if tag:
-            self.fields['tag'] = tag
-
-    checkbox = forms.BooleanField()
-
     class Meta:
-        model = PostTags
-        fields = ('tag',)
-
+        model = TagChecker
+        fields = ('check',)
 
 #Create a section for the user
 class CreateSectionForm(forms.ModelForm):
@@ -91,7 +81,6 @@ class CreateSectionForm(forms.ModelForm):
         fields = ('name',)
         exclude = ('user',)
 
-
 #Add a link to the user profile
 class UserLinksForm(forms.ModelForm):
 
@@ -99,11 +88,4 @@ class UserLinksForm(forms.ModelForm):
         model = UserLinks
         fields = ('site_name', 'link')
 
-"""
-class professionTagFilterForm(forms.ModelForm):
-    name = 
 
-    class Meta:
-        model = Tags
-        fields = ('name',)
-"""

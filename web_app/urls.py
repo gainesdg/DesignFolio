@@ -11,6 +11,10 @@ urlpatterns = [
     path('user/<slug:user_name_slug>/', views.profile, name = 'profile'),
     path('post/<posts_pid>/', views.post, name = 'post'),
 
+    path('search/<argument>/', views.search, name='search'),
+
+    path(r'^upvote/$', views.upvote, name='upvote'),
+
     path('create-post/', views.add_post, name='add_post'),
     path('add-section/', views.add_section, name='add_section'),
 
