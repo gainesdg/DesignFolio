@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import formset_factory
 from web_app.models import *
 from django.contrib.auth.models import User
 
@@ -57,7 +58,6 @@ class CreatePostForm(forms.ModelForm):
 
     title = forms.CharField(max_length=128, help_text="Title")
     description = forms.CharField(max_length=512, help_text="Description")
-    likes = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
     
     class Meta:
         model = Posts
@@ -65,11 +65,12 @@ class CreatePostForm(forms.ModelForm):
         exclude = ('profession',)
 
 #Checkbox menu to specify what tags to include when creating a post
-class IncludeTagForm(forms.ModelForm):
+class IncludeTagForm(forms.Form):
+    check = forms.BooleanField(initial=False, required=False)
 
-    class Meta:
-        model = TagChecker
-        fields = ('check',)
+#Checkbox menu to specify what tags to filter posts by on the professions page
+class TagFilterForm(forms.Form):
+    check = forms.BooleanField(initial=True, required=False)
 
 #Create a section for the user
 class CreateSectionForm(forms.ModelForm):

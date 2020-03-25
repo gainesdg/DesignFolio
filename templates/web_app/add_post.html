@@ -11,25 +11,32 @@
 	<form id="add_post_form" method="post" enctype="multipart/form-data" action="{% url 'design-grid:add_post' %}">
 		{% csrf_token %} <!---protects information passed during hidden post -->
 		
+		<!-- section drop down menu form -->
 		{{ section.as_p }}
 		
-		{% for hidden in post_form.hidden_fields %}
-			{{ hidden }}
-		{% endfor %}
-		
-		{% for field in post_form.visible_fields %}
+		<!-- post details form -->
+		{% for field in post_form %}
 			{{ field.errors }}
 			{{ field.help_text }}
 			{{ field }}
 			<br>
 		{% endfor %}
 		
+		<!-- post tags -->
 		Tags<br>
-		{% for tag, tag_form in tag_form_list.items %}
-			{% for field in tag_form %}
-				{{ field }}{{tag}}<br>
-			{% endfor %}
-		{% endfor %}
+		
+		{{ formset.management_form }}
+			<table>
+				<!-- loop through the tags and the forms -->
+				{% for tag, form in tagforms %}
+					<!-- display checkbox widget -->
+					{% for field in form %}
+						{{field}}
+					{% endfor %}
+					<!-- display matching tag -->
+					{{tag}}<br>
+				{% endfor %}
+			</table>
 		
 		<input type="submit" name="submit" value="Create Post" />
 	</form>

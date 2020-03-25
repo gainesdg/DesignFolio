@@ -29,21 +29,58 @@ def profession(request, profession_name_slug):
         #Get the profession that matches the profession in the URL
         #Get the tags and posts related to this profession
         profession = Profession.objects.get(slug=profession_name_slug)
-        tags = Tags.objects.filter(profession=profession)
-        posts = Posts.objects.filter(profession=profession)
-        
-        #store relevant tags and professions
-        context_dict['tags'] = tags
-        context_dict['profession'] = profession
-        context_dict['posts'] = posts
-
-        return render(request, 'web_app/profession.html', context_dict)
+        tag_list = Tags.objects.filter(profession=profession)
 
     except Profession.DoesNotExist:
         #If the url does not have an existing profession show an error page
         context_dict['item'] = ''.join(('Profession, ', profession_name_slug, ','))
         return render(request, 'web_app/missing_content.html', context_dict)
 
+
+    """
+    #create a dictionary of forms, one for each tag that matches the users profession
+    tag_form_list = {}
+    for tag in tag_list:
+        tag_form_list[tag] = IncludeTagForm()
+
+    if request.method == 'POST':
+
+        tag_form_list = {}
+        for tag in tag_list:
+            tag_form_list[tag] = IncludeTagForm(request.POST)
+
+        tag_filter=[]
+        #SAVE TAG FORMS
+        for tag, tag_form in tag_form_list.items():
+            #get each form
+            if tag_form.is_valid():
+                check = tag_form.cleaned_data['check']
+                print(check)
+                if check: #see if the checkbox was ticked
+                    #if ticked, create a post tags object to say they included this tag
+                    tag_filter.append(tag)
+    """
+    #Tag filter is a list of tags that is a subset of the tags in this profession
+    tag_filter = tag_list
+
+    #Get all posts in this profession
+    #Get all post-tag relations that match the filtered subset of tags
+    #Filter the posts that only appear with these tags
+    posts = Posts.objects.filter(profession=profession)
+    tags = PostTags.objects.filter(tag__in=tag_filter).values('post_id')
+    posts = posts.filter(pid__in=tags)
+    
+    
+    #store relevant tags and professions
+    context_dict['tags'] = tag_list
+    context_dict['profession'] = profession
+    context_dict['posts'] = posts
+    #number of posts with these tags in this profession
+    context_dict['count'] = len(posts)
+
+    return render(request, 'web_app/profession.html', context_dict)
+
+    
 #Display the Profile Page
 def profile(request, user_name_slug):
     context_dict = {}
@@ -167,31 +204,29 @@ def add_post(request):
     #Form for general post attributes.     
     post_form = CreatePostForm(user=request.user)
     
-
     #create a dictionary of forms, one for each tag that matches the users profession
     tag_list = Tags.objects.filter(profession=request.user.userprofile.profession)
-    tag_form_list = {}
-    for tag in tag_list:
-        tag_form_list[tag] = IncludeTagForm()
-
+    
+    #Create a formset, containing a checkbox for each form
+    IncludeTagFormSet = formset_factory(IncludeTagForm, extra=len(tag_list))
+    tag_formset = IncludeTagFormSet()
 
     if request.method == 'POST':
 
         post_form = CreatePostForm(request.POST, request.FILES, user=request.user)
 
-        #create a dictionary of forms, one for each tag that matches the users profession
-        tag_form_list = {}
-        for tag in tag_list:
-            tag_form_list[tag] = IncludeTagForm(request.POST)
+        #Create a formset, containing a checkbox for each form
+        IncludeTagFormSet = formset_factory(IncludeTagForm, extra=len(tag_list))
+        tag_formset = IncludeTagFormSet(request.POST)
+        
 
         # Have we been provided with a valid form?
-        if post_form.is_valid():
+        if post_form.is_valid() and tag_formset.is_valid():
 
             #SAVE POST FORM
             post = post_form.save(commit=False)
             #set the profession to that of the user
             post.profession = UserProfile.objects.get(user=request.user).profession
-
             #save picture to appropriate location
             if 'picture' in request.FILES:
                 post.picture = request.FILES['picture']
@@ -199,17 +234,15 @@ def add_post(request):
             post.save()
 
             #SAVE TAG FORMS
-            for tag, tag_form in tag_form_list.items():
-                #get each form
-                if tag_form.is_valid():
-                    include = tag_form.save(commit=False)
-                    print(include)
-                    print(include.check)
-                    if include.check: #see if the checkbox was ticked
-                        #if ticked, create a post tags object to say they included this tag
-                        post_tag = PostTags.objects.create(tag=tag, post=post)
-                        post_tag.save()
+            #iterate through the tags and the corresponding checkbox in parrallel
+            for tag, form in zip(tag_list, tag_formset):
+                check = form.cleaned_data.get('check') #get checkbox data
+                if check: #see if the checkbox was ticked
+                    #if ticked, create a post tags object to say they included this tag
+                    post_tag = PostTags.objects.create(tag=tag, post=post)
+                    post_tag.save()
 
+            #identify the post to redirect to correct post URL
             posts_pid=post.pid
             return redirect(reverse('design-grid:post', kwargs={'posts_pid': posts_pid} ))
         else:
@@ -217,10 +250,13 @@ def add_post(request):
             # just print them to the terminal.
             print(post_form.errors)#,tags_form.errors)
             return HttpResponse("Error whilst processing your request")
+
+    #pack the tag name and the form so the user knows which checkbox matches which tag
+    tag_forms = zip(tag_list, tag_formset)
             
     # Will handle the bad form, new form, or no form supplied cases.
     # Render the form with error messages (if any).
-    return render(request, 'web_app/add_post.html', {'post_form': post_form, 'tag_form_list':tag_form_list})
+    return render(request, 'web_app/add_post.html', {'post_form': post_form, 'tagforms':tag_forms, 'formset':tag_formset})
 
 
 #ADD A SECTION (WHICH CONTAINS POSTS) TO THE USERS PROFILE
@@ -333,8 +369,11 @@ def search(request, argument):
     
     context_dict['argument'] = argument
     #list users with matching name
-    users= User.objects.filter(username__icontains=argument)
+    users = User.objects.filter(username__icontains=argument)
     context_dict['users']= users
+    #list users with matching location
+    profile = UserProfile.objects.filter(location__icontains=argument)
+    context_dict['location']= profile
     #list post with matching titles
     posts = Posts.objects.filter(title__icontains=argument)
     context_dict['posts']= posts

@@ -7,9 +7,9 @@
 
 {% block body_block %}
 	<h1>Search results for '{{argument}}'</h1>
-	<h2>Users</h2>
+	<h2>Users - Username</h2>
 	
-	<!--Menu of Users-->
+	<!--Menu of Users filtered by Username-->
 	<ul class="flex-container-b">
 		{% for user in users %}
 		<li class="flex-item-b">
@@ -20,7 +20,20 @@
 		
 	</ul>
 	
-	<h2>Posts</h2>
+	<h2>Users - Location</h2>
+	
+	<!--Menu of Users filtered by Location-->
+	<ul class="flex-container-b">
+		{% for user in location %}
+		<li class="flex-item-b">
+			<img src="{{MEDIA_URL}}{{user.picture}}" alt="post_image." /><br>
+			<a href="{% url 'design-grid:profile' user.slug %}">{{user.user.username}}</a>
+		</li>
+		{% endfor %}
+		
+	</ul>
+	
+	<h2>Posts - Titles</h2>
 	
 	<!--Menu of Posts-->
 	<ul class="flex-container-b">

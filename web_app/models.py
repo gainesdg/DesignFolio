@@ -3,7 +3,6 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 
 
-
 class Profession(models.Model):
     name = models.CharField(max_length=128, unique=True)
     slug = models.SlugField(unique=True)
@@ -102,6 +101,3 @@ class PostLikes(models.Model):
     #Ensure User cannot like a post twice
     class Meta:
         unique_together = (('user', 'post'))
-
-class TagChecker(models.Model):
-    check = models.BooleanField(default=False)

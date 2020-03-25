@@ -24,10 +24,12 @@
 	<br>
 	User: <a href="{% url 'design-grid:profile' profile.slug %}">{{profile}}</a>
 	<br>
-	<script src="{% static 'js/vote.js' %}"></script>
+	
 	<input type="button" id="upvote" value="like" onclick="upvote"/>
 	
 	
 </div>
+
+<script src="{% static 'js/vote.js' %}"></script>
 
 {% endblock %}
