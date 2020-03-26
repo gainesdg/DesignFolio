@@ -13,8 +13,6 @@ urlpatterns = [
 
     path('search/<argument>/', views.search, name='search'),
 
-    #path(r'^upvote/$', views.upvote, name='upvote'),
-
     path('create-post/', views.add_post, name='add_post'),
     path('add-section/', views.add_section, name='add_section'),
 

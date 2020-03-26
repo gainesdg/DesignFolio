@@ -38,27 +38,51 @@ def profession(request, profession_name_slug):
 
 
     """
-    #create a dictionary of forms, one for each tag that matches the users profession
-    tag_form_list = {}
-    for tag in tag_list:
-        tag_form_list[tag] = IncludeTagForm()
+    tag_list = Tags.objects.filter(profession=request.user.userprofile.profession)
+    
+    #Create a formset, containing a checkbox for each form
+    IncludeTagFormSet = formset_factory(IncludeTagForm, extra=len(tag_list))
+    tag_formset = IncludeTagFormSet()
 
-    if request.method == 'POST':
+    if request.method == 'POST': #SUMBIT BUTTON
 
-        tag_form_list = {}
-        for tag in tag_list:
-            tag_form_list[tag] = IncludeTagForm(request.POST)
+        post_form = CreatePostForm(request.POST, request.FILES, user=request.user)
 
-        tag_filter=[]
-        #SAVE TAG FORMS
-        for tag, tag_form in tag_form_list.items():
-            #get each form
-            if tag_form.is_valid():
-                check = tag_form.cleaned_data['check']
-                print(check)
+        #Create a formset, containing a checkbox for each form
+        IncludeTagFormSet = formset_factory(IncludeTagForm, extra=len(tag_list))
+        tag_formset = IncludeTagFormSet(request.POST)
+        
+
+        # Have we been provided with a valid form?
+        if post_form.is_valid() and tag_formset.is_valid():
+
+            #SAVE POST FORM
+            post = post_form.save(commit=False)
+            #set the profession to that of the user
+            post.profession = UserProfile.objects.get(user=request.user).profession
+            #save picture to appropriate location
+            if 'picture' in request.FILES:
+                post.picture = request.FILES['picture']
+            #save to database
+            post.save()
+
+            #SAVE TAG FORMS
+            #iterate through the tags and the corresponding checkbox in parrallel
+            for tag, form in zip(tag_list, tag_formset):
+                check = form.cleaned_data.get('check') #get checkbox data
                 if check: #see if the checkbox was ticked
                     #if ticked, create a post tags object to say they included this tag
-                    tag_filter.append(tag)
+                    post_tag = PostTags.objects.create(tag=tag, post=post)
+                    post_tag.save()
+
+            #identify the post to redirect to correct post URL
+            posts_pid=post.pid
+            return redirect(reverse('design-grid:post', kwargs={'posts_pid': posts_pid} ))
+        else:
+            # The supplied form contained errors -
+            # just print them to the terminal.
+            print(post_form.errors)#,tags_form.errors)
+            return HttpResponse("Error whilst processing your request")
     """
     #Tag filter is a list of tags that is a subset of the tags in this profession
     tag_filter = tag_list
@@ -169,41 +193,6 @@ def post(request, posts_pid):
             liked = like(request.user, post) #like or unlike the post. return true if liked
 
     return render(request, 'web_app/post.html', context_dict)
-
-#UPVOTING A POST
-def upvote(request):
-    
-    # We only accept GET requests from authenticated users.
-    # We also bypass authentication if the process is called from the population script.
-    if (type(request) != dict):
-        if (request.method != "GET"):
-            print("Not a GET.")
-            return render(request, 'post.html')
-
-        if (not request.user.is_authenticated):
-            print("Not authenticated.")
-            return render(request, 'web_app/post.html')
-
-    # We have the dict versus normal because the population script also uses the upvote
-    # function. Meanwhile the requests don't use dict.
-    if (type(request) == dict):
-        username = request['username']
-        pid = request['pid']
-    else:
-        username = request.user.username
-        pid = request.GET.get('pid', None)
-
-    # Get objects from database for the given parameters.
-    user = User.objects.get(username=username)
-    post = Post.objects.get(pid=pid)
-
-    #like or unlike the post
-    like(user, post)
-    
-    if (type(request) == dict):
-        return
-    else:
-        return render(request, 'web_app/post.html')  
 
 
 
