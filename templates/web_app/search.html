@@ -6,6 +6,13 @@
 {% endblock %}
 
 {% block body_block %}
+
+	<form id="search_form" method="post" action="{% url 'design-grid:search' argument %}">
+	{% csrf_token %}
+	<input type="text" name="search" value="" size="50" />
+	<input type="submit" value="search" />
+	</form>
+
 	<h1>Search results for '{{argument}}'</h1>
 	<h2>Users - Username</h2>
 	

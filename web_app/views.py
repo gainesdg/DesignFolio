@@ -136,27 +136,43 @@ def post(request, posts_pid):
         #Find the post with the matching ID in the URL
         post = Posts.objects.get(pid=posts_pid)
         context_dict['post'] = post
-
-        #Get the tags of this post
-        tags = PostTags.objects.filter(post=post)
-        context_dict['tags']=tags 
-
-        context_dict['likes'] = len(PostLikes.objects.filter(post=post))
-
-        #Find the creater of the post. Section has attribute user, post has attribute section
-        user = post.section.user
-        profile = UserProfile.objects.get(user=user)
-        context_dict['profile']=profile
-
-        return render(request, 'web_app/post.html', context_dict)
-
     #If the URL containing the post ID does not exist, show error page
     except Posts.DoesNotExist:
         context_dict['item'] = ''.join(('Post with ID: ', posts_pid, ','))
         return render(request, 'web_app/missing_content.html', context_dict)
 
+    #Get the tags of this post
+    tags = PostTags.objects.filter(post=post)
+    context_dict['tags']=tags 
+
+    context_dict['likes'] = len(PostLikes.objects.filter(post=post))
+
+    #Find the creater of the post. Section has attribute user, post has attribute section
+    user = post.section.user
+    profile = UserProfile.objects.get(user=user)
+    context_dict['profile']=profile
+
+    #LIKE/UNLIKE BUTTON
+    #check user is logged in
+    if request.user.is_authenticated:
+        #has user liked post?
+        try:
+            PostLikes.objects.get(post=post, user=request.user)
+            liked=True
+        except:
+            liked=False
+        #if they have liked it, button should present option to 'unlike' it
+        if liked: context_dict['liked'] = 'Unlike'
+        else: context_dict['liked'] = 'Like'
+
+        if request.method == 'POST': #if user presses like button, like or unlike post
+            liked = like(request.user, post) #like or unlike the post. return true if liked
+
+    return render(request, 'web_app/post.html', context_dict)
+
 #UPVOTING A POST
 def upvote(request):
+    
     # We only accept GET requests from authenticated users.
     # We also bypass authentication if the process is called from the population script.
     if (type(request) != dict):
@@ -187,7 +203,7 @@ def upvote(request):
     if (type(request) == dict):
         return
     else:
-        return render(request, 'web_app/post.html')
+        return render(request, 'web_app/post.html')  
 
 
 
@@ -377,16 +393,20 @@ def search(request, argument):
     #list post with matching titles
     posts = Posts.objects.filter(title__icontains=argument)
     context_dict['posts']= posts
+
     
-    return render(request, 'web_app/search.html', context_dict)
+    #TEMPORARY WILL READ FROM SEARCH BAR IN BASE.HTML LATER
+    if request.method == 'POST':
+        search = request.POST.get('search') #read in input of search bar
 
-
-def search_bar(request):
-    argument = ''
-
-    if 'search' in request.GET:
-        argument = request.GET['search']
-
+        if search: #if there is an input
+            #look up the search term
+            return redirect(reverse('design-grid:search', kwargs={'argument': search } ))
+    
+    # The request is not a HTTP POST, so display the login form.
+    # This scenario would most likely be a HTTP GET.
+    else:
+        return render(request, 'web_app/search.html', context_dict)
 
 
 #REGISTER A NEW USER
