@@ -24,19 +24,12 @@
 		
 		<!-- post tags -->
 		Tags<br>
-		
-		{{ formset.management_form }}
-			<table>
-				<!-- loop through the tags and the forms -->
-				{% for tag, form in tagforms %}
-					<!-- display checkbox widget -->
-					{% for field in form %}
-						{{field}}
-					{% endfor %}
-					<!-- display matching tag -->
-					{{tag}}<br>
-				{% endfor %}
-			</table>
+		<!-- loop through each tag and create a checkbox with the name of the tag -->
+		{% for tag in tags %}
+			<input type="checkbox" id="{{tag.name}}" name="{{tag.name}}" value="on">
+			{{tag}}
+			<br>
+		{% endfor %}
 		
 		<input type="submit" name="submit" value="Create Post" />
 	</form>

@@ -64,14 +64,6 @@ class CreatePostForm(forms.ModelForm):
         fields = ('picture', 'section', 'title', 'description')
         exclude = ('profession',)
 
-#Checkbox menu to specify what tags to include when creating a post
-class IncludeTagForm(forms.Form):
-    check = forms.BooleanField(initial=False, required=False)
-
-#Checkbox menu to specify what tags to filter posts by on the professions page
-class TagFilterForm(forms.Form):
-    check = forms.BooleanField(initial=True, required=False)
-
 #Create a section for the user
 class CreateSectionForm(forms.ModelForm):
 
