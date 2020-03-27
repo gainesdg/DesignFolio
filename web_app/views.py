@@ -12,8 +12,6 @@ from django.template.defaultfilters import slugify
 from web_app.models import *
 from web_app.forms import *
 
-from web_app.likes import like
-
 #Display the home page
 def index(request):
     #List every profession in database
@@ -40,7 +38,7 @@ def profession(request, profession_name_slug):
     context_dict['tags'] = tags
     context_dict['profession'] = profession
 
-    return render(request, 'web_app/profession_test.html', context_dict)
+    return render(request, 'web_app/profession.html', context_dict)
 
 #Load in the filtered professions
 def profession_filter(request):
@@ -158,17 +156,20 @@ def post(request, posts_pid):
     if request.user.is_authenticated:
         #has user liked post?
         try:
-            PostLikes.objects.get(post=post, user=request.user)
-            liked=True
+            like = PostLikes.objects.get(post=post, user=request.user)
+            liked= True
         except:
-            liked=False
+            liked= False
+
         #if they have liked it, button should present option to 'unlike' it
-        if liked: context_dict['liked'] = 'Unlike'
-        else: context_dict['liked'] = 'Like'
-
-        if request.method == 'POST': #if user presses like button, like or unlike post
-            liked = like(request.user, post) #like or unlike the post. return true if liked
-
+        context_dict['liked'] = liked
+        
+        if request.method == 'POST':
+            if liked:
+                like.delete()
+            else:
+                PostLikes.objects.get_or_create(user=user, post=post)
+        
     return render(request, 'web_app/post.html', context_dict)
 
 
