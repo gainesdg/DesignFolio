@@ -11,19 +11,20 @@ def populate():
     #professions and tags
     professions = {
         "Architect":
-            ["Extension","Renovation","Floor Plan","Render","Modern","Brutalist","Gothic","Industrial","Landscape"],
+            ["Extension","Renovation","Floor Plan","Render","Modern","Brutalist","Gothic","Industrial","Landscape","Work-in-progress"],
         "Graphic Designer":
-            ["Logo","Font","User Interface","Publication","Art and Illustration"],
+            ["Logo","Font","User Interface","Publication","Art and Illustration","Minimalist","Abstract","Work-in-progress"],
         "Artist":
-            ["Digital","Concept","Abstract","Realism","Cartoon","Portrait","Landscape","Cityscape","Sculpture", "Sketch"],
+            ["Digital","Concept","Abstract","Realism","Cartoon","Portrait","Landscape","Cityscape","Sculpture","Sketch","Work-in-progress"],
         "Fashion Designer":
-            ["Dress","Suit","Casual","Abstract","Womens","Mens","Day Wear","Evening Wear","Sports Wear","Swim Wear","Lingerie"],
+            ["Dress","Suit","Casual","Abstract","Womens","Mens","Day Wear","Evening Wear","Sports Wear","Swim Wear","Lingerie","Work-in-progress"],
         "Interior Designer":
-            ["Mid-Century Modern","Industrail","Nautical","Scandinavian","Bohemian","Minimalist"],
+            ["Mid-Century Modern","Industrail","Nautical","Scandinavian","Bohemian","Minimalist","Work-in-progress"],
         "Game Developer":
-            ["Character Model","Asset Model","Scene","User Interface","Shaders","Animation","Level Design"],
+            ["Character Model","Asset Model","Scene","User Interface","Shaders","Animation","Level Design","Work-in-progress"],
         "Software Designer":
-            ["Asset Design","Wireframe Diagrams","Database Diagrams","Class Diagrams"],
+            ["Asset Design","Wireframe Diagrams","Database Diagrams","Class Diagrams","Work-in-progress"],
+        "Guest":[], #Used hobbiests and people who intend to hire people for commisions etc.
     }
 
     users = {
@@ -90,7 +91,7 @@ def populate():
             'picture':'profile_images/default.png',
             'location':'Calafornia',
             'bio':'US Transfer at Uni of Glasgow',
-            'profession':'Interior Designer',
+            'profession':'Guest',
             'available':False,
             },
         'Dav':{
@@ -257,7 +258,7 @@ def populate():
         for t in Tags.objects.filter(profession=p):
             print(f' └─ {t}')
     
-    print('Added Users:')
+    print('\nAdded Users:')
     for u in User.objects.all():
         print(f'{u.first_name} {u.last_name}\n{u}')
         print(' └─ Links:')

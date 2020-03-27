@@ -12,6 +12,7 @@ urlpatterns = [
     path('post/<posts_pid>/', views.post, name = 'post'),
 
     path('search/<argument>/', views.search, name='search'),
+    path('profession_filter/', views.profession_filter, name='profession_filter'),
 
     path('create-post/', views.add_post, name='add_post'),
     path('add-section/', views.add_section, name='add_section'),

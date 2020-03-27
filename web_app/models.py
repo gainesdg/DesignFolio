@@ -59,7 +59,6 @@ class Section(models.Model):
         return self.name
 
 
-
 class Tags(models.Model):
     name = models.CharField(max_length=128)
     profession = models.ForeignKey(Profession, on_delete=models.CASCADE)

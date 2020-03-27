@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.template import loader
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -29,57 +30,56 @@ def profession(request, profession_name_slug):
         #Get the profession that matches the profession in the URL
         #Get the tags and posts related to this profession
         profession = Profession.objects.get(slug=profession_name_slug)
-        tag_list = Tags.objects.filter(profession=profession)
+        tags = Tags.objects.filter(profession=profession)
 
     except Profession.DoesNotExist:
         #If the url does not have an existing profession show an error page
         context_dict['item'] = ''.join(('Profession, ', profession_name_slug, ','))
         return render(request, 'web_app/missing_content.html', context_dict)
 
-
-    """
-    #get each tag that matches the users profession
-    tag_list = Tags.objects.filter(profession=request.user.userprofile.profession)
-
-    if request.method == 'POST':
-
-        #loop through each tag
-        for tag in tag_list:
-            #check if the corresponding tag has been ticked in the html form
-            check = request.POST.get(tag.name)
-            if check !=None: #see if the checkbox was ticked
-                #if ticked, create a post tags object to say they included this tag
-                post_tag = PostTags.objects.create(tag=tag, post=post)
-                post_tag.save()
-
-        #identify the post to redirect to correct post URL
-        posts_pid=post.pid
-        return redirect(reverse('design-grid:post', kwargs={'posts_pid': posts_pid} ))
-    else:
-        # The supplied form contained errors -
-        # just print them to the terminal.
-        print(post_form.errors)#,tags_form.errors)
-        return HttpResponse("Error whilst processing your request")
-    """
-    #Tag filter is a list of tags that is a subset of the tags in this profession
-    tag_filter = tag_list
-
-    #Get all posts in this profession
-    #Get all post-tag relations that match the filtered subset of tags
-    #Filter the posts that only appear with these tags
-    posts = Posts.objects.filter(profession=profession)
-    tags = PostTags.objects.filter(tag__in=tag_filter).values('post_id')
-    posts = posts.filter(pid__in=tags)
-    
-    
-    #store relevant tags and professions
-    context_dict['tags'] = tag_list
+    context_dict['tags'] = tags
     context_dict['profession'] = profession
-    context_dict['posts'] = posts
-    #number of posts with these tags in this profession
-    context_dict['count'] = len(posts)
 
     return render(request, 'web_app/profession_test.html', context_dict)
+
+#Load in the filtered professions
+def profession_filter(request):
+    context_dict={}
+    if request.method == 'POST':
+        
+        profession_name_slug=request.POST.get('slug')
+        profession = Profession.objects.get(slug=profession_name_slug)
+        
+        checkboxes = request.POST.getlist('checkboxes[]')
+        tags = Tags.objects.filter(profession=profession)
+
+        #tag filter is a list of tags the user wants to include
+        tag_filter = []
+
+        #loop through each tag and its corresponding checkbox
+        for tag, checkbox in zip(tags, checkboxes):
+            #check if the corresponding tag has been ticked in the html form
+            if checkbox == 'true': #see if the checkbox was ticked
+                #if ticked, create a post tags object to say they included this tag
+                tag_filter.append(tag)
+
+        #Get all posts in this profession
+        #Get all post-tag relations that match the filtered subset of tags
+        #Filter the posts that only appear with these tags
+        posts = Posts.objects.filter(profession=profession)
+        tags = PostTags.objects.filter(tag__in=tag_filter).values('post_id')
+        posts = posts.filter(pid__in=tags)
+        
+        #store relevant tags and professions
+        context_dict['tags'] = tags
+        context_dict['profession'] = profession
+        context_dict['posts'] = posts
+        #number of posts with these tags in this profession
+        context_dict['count'] = len(posts)
+
+        context_dict['posts'] = posts
+
+        return render(request, 'web_app/profession_posts.html', context_dict)
 
     
 #Display the Profile Page
@@ -170,7 +170,6 @@ def post(request, posts_pid):
             liked = like(request.user, post) #like or unlike the post. return true if liked
 
     return render(request, 'web_app/post.html', context_dict)
-
 
 
 def get_server_side_cookie(request, cookie, default_val=None):
@@ -401,7 +400,7 @@ def register(request):
 
 #LOG IN AS AN EXISTING USER
 def user_login(request):
-    
+
     #if user is logged in, redirect them to home page
     if request.user.is_authenticated:
         return redirect(reverse('design-grid:index'))
