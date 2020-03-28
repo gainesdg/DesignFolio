@@ -55,8 +55,11 @@
 				<li class="dropdown">
 					<a class="dropbtn">My Profile<i></i></a>
 						<div class="dropdown-content">
-							<a href="{% url 'design-grid:profile' user.userprofile.slug %}">My Profile</a>
-							<a href="{% url 'design-grid:edit_profile' %}">Edit Profile</a>
+							<!-- If user is super user they will not have a profile to edit and view -->
+							{% if not request.user.is_superuser %}
+								<a href="{% url 'design-grid:profile' user.userprofile.slug %}">My Profile</a>
+								<a href="{% url 'design-grid:edit_profile' %}">Edit Profile</a>
+							{% endif %}
 							<a href="{% url 'design-grid:logout' %}">Logout</a>
 						</div>
 				</li>

@@ -415,6 +415,10 @@ def user_login(request):
             if user.is_active:
                 login(request, user)
 
+                #if the user is a super user, they will not have a profile to redirect to
+                if request.user.is_superuser:
+                    return redirect(reverse('design-grid:index'))
+
                 user_name_slug = UserProfile.objects.get(user=user).slug
                 return redirect(reverse('design-grid:profile', kwargs={'user_name_slug': user_name_slug } ))
             else:
