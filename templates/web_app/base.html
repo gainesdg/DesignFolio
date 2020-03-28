@@ -3,13 +3,20 @@
 {% load designgrid_template_tags %}
 
 <html>
+
 	<!-- JQuery -->
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js" type="text/javascript"></script>
 	
 	<!-- Font -->
 	<link href="https://fonts.googleapis.com/css?family=Nunito|Quicksand&display=swap" rel="stylesheet">
+	
 	<head>
-	<link rel="stylesheet" type="text/css" href="{% static 'styles/styles.css' %}">
+		<!-- bootstrap -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<!--
+		<link rel="stylesheet" type="text/css" href="{% static 'styles/styles.css' %}">
+		-->
+		<link rel="stylesheet" type="text/css" href="{% static 'styles/image_fit.css' %}">
 	</head>
 	
 	<head lang="en">
@@ -26,60 +33,84 @@
 	<!-- contents of the page -->
 	<body>
 		<!-- NAV BAR -->
-		<ul  class="navbar">
-		
-			<li class="logo">DesignGrid</li>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<!-- Nav bar logo -->
+			<a class="navbar-brand">Design Grid</a>
 			
-			<!-- SEARCH BAR -->
-			<input id="text" type="text" name="search" value="" size="50" />
-			<input id="search" type="submit" value="search" />
+			<!-- if creen is to small, add collapse and expand button -->
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
 			
-			<!-- Link to home page -->
-			<li><a href={% url 'design-grid:index' %}>Home</a></li>
-			
-			<!-- Link to professions pages -->
-			<li class="dropdown">
-				<a class="dropbtn">Professions<i></i></a>
-					<div class="dropdown-content">
-
-						{% for profession in professions %}
-							<a href="{% url 'design-grid:profession' profession.slug %}">{{profession.name}}</a>
-						{% endfor %}
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<!-- Navbar with search bar -->
+				<ul class="navbar-nav ">
+					<!-- Search bar -->
+					<li class="form-inline my-2 my-lg-0">
+						<span class="input-group-append">
+						<input id="text" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+						
+						<button id="search" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+					</li>
 					
-					</div>
-			</li>
-			
-			<!-- Login/ Logout Menu -->
-			
-			{% if user.is_authenticated %}
-				<li class="dropdown">
-					<a class="dropbtn">My Profile<i></i></a>
-						<div class="dropdown-content">
-							<!-- If user is super user they will not have a profile to edit and view -->
-							{% if not request.user.is_superuser %}
-								<a href="{% url 'design-grid:profile' user.userprofile.slug %}">My Profile</a>
-								<a href="{% url 'design-grid:edit_profile' %}">Edit Profile</a>
-							{% endif %}
-							<a href="{% url 'design-grid:logout' %}">Logout</a>
+				</ul>
+				<!-- Nav bar with buttons and drop dwon -->
+				<ul class="navbar-nav ml-auto">
+				
+					<!-- Home Button -->
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'design-grid:index' %}">Home</a>
+					</li>
+					
+					<!-- Professions list -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professions </a>
+						
+						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+							{% for profession in professions %}
+								<a class="dropdown-item" href="{% url 'design-grid:profession' profession.slug %}">{{profession.name}}</a>
+							{% endfor %}
 						</div>
-				</li>
-			{% else %}
-				<li class="dropdown">
-					<a class="dropbtn">Log in<i></i></a>
-						<div class="dropdown-content">
-							<a href="{% url 'design-grid:login' %}">Log in</a>
-							<a href="{% url 'design-grid:register' %}">Sign up</a>
-						</div>
-				</li>
-			{% endif %}
-			
-		</ul>
+					</li>
+						
+					<!-- Drop down Menu - Profile and Login/register etc -->
+					{% if user.is_authenticated %}
+						<li class="nav-item dropdown ">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Profile </a>
+							
+							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+								{% if not request.user.is_superuser %}
+									<a class="dropdown-item" href="{% url 'design-grid:profile' user.userprofile.slug %}">My Profile</a>
+									<a class="dropdown-item" href="{% url 'design-grid:edit_profile' %}">Edit Profile</a>
+									<div class="dropdown-divider"></div>
+								{% endif %}
+									<a class="dropdown-item" href="{% url 'design-grid:logout' %}">Logout</a>
+							</div>
+						</li>
+					<!-- Login/register -->
+					{% else %}
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Log in </a>
+							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+								<a class="dropdown-item" href="{% url 'design-grid:login' %}">Log in</a>
+								<a class="dropdown-item" href="{% url 'design-grid:register' %}">Sign up</a>
+							</div>
+						</li>
+					{% endif %}
+				</ul>
+			</div>		
+		</nav>
+		
 		
 		<!-- TEMPLATE CONTENTS -->
 		<div>
 			{% block body_block %}
 			{% endblock %}
 		</div>
+		
+		<!-- Bootstrap JS -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 		
 		<!-- Search bar functionality -->
 		{% csrf_token %}

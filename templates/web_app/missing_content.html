@@ -1,10 +1,15 @@
-<!DOCTYPE html>
+{% extends 'web_app/base.html' %}
+{% load staticfiles %}
 
-<html>
-<body>
+{% block title_block %}
+	Missing Content
+{% endblock %}	
+
+
+{% block body_block %}
 
 <h3> Oops... Sorry! </h3>
 <h1> Missing Content: </h1>
 <h2> {{item}} NOT FOUND. </h2>
 
-</body>
+{% endblock %}

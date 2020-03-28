@@ -7,34 +7,39 @@
 
 {% block body_block %}	
 
-<div>
 	<!-- Image: -->
-	<img src="{{MEDIA_URL}}{{post.picture}}" alt="post_image." /><br>
-	Title: {{post.title}} <br>
-	Description: {{post.description}} <br>
-	Likes: {{likes}} <br>
-	
-	Tags: 
-	{% for tag in tags %}
-		{{tag}},
-	{% endfor %}
-	<br>
-	User: <a href="{% url 'design-grid:profile' profile.slug %}">{{profile}}</a>
-	<br>
-	
-	{% if user.is_authenticated %}
-		{% csrf_token %}
-		{% if liked %}
-			<input type="submit" id="like" value="unlike" />
-		{% else %}
-			<input type="submit" id="like" value="like" />
-		{% endif %}
-	{% else %}
-		Log in to Like Post
-	{% endif %}
-	
-</div>
-	
+	<div class="container-fluid" style="margin-left: 10px !important; margin-top: 10px !important; margin-bottom: 5px !important;">
+	  <div class="row">
+		<div class="col-ml">
+			<img src="{{MEDIA_URL}}{{post.picture}}" style="width: 1000px; height: auto;" alt="post_image." /><br>
+		</div>
+		<div class="col-sm">
+			Title: {{post.title}} <br>
+			Description: {{post.description}} 
+			<br><br>
+			Tags: 
+			{% for tag in tags %}
+				<span class="badge badge-pill badge-secondary">{{tag}}</span>
+			{% endfor %}
+			<br>
+			User: <a href="{% url 'design-grid:profile' profile.slug %}">{{profile}}</a>
+			<br><br>
+			{{likes}} likes
+			<br>
+			{% if user.is_authenticated %}
+				{% csrf_token %}
+				{% if liked %}
+					<input type="submit" id="like" value="unlike" />
+				{% else %}
+					<input type="submit" id="like" value="like" />
+				{% endif %}
+			{% else %}
+				Log in to Like Post
+			{% endif %}
+		</div>
+	  </div>
+	</div>
+
 	{% csrf_token %}
 	<script>
 	$('#like').click(function(){
@@ -50,6 +55,7 @@
 			}
 		});
 	}
+	</script>
 	</script>
 
 {% endblock %}

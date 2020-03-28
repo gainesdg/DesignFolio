@@ -3,16 +3,18 @@
 
 ***
 
-<!--Menu of Posts-->
-<ul class="flex-container-b">
-	{% for post in posts %}
-	<li class="flex-item-b">
-
-		<img src="{{MEDIA_URL}}{{post.picture}}" alt="post_image." /><br>
-		{{post.title}} <br>
-		Likes: {{post.likes}}<br>
-		<a href="{% url 'design-grid:post' post.pid %}">View Post</a>
-	</li>
-	{% endfor %}
-	
-</ul>
+<div class="container-fluid" style="margin-left: 10px !important; margin-top: 10px !important; margin-right: 10px !important;">
+	<div class="card-deck">
+		{% for post, likes in posts.items %}
+			<a href="{% url 'design-grid:post' post.pid %}" style="color: #222222;">
+				<div class="card" style="width: 18rem;">
+				  <img class="card-img-top" src="{{MEDIA_URL}}{{post.picture}}" alt="post_image">
+				  <div class="card-body">
+					<h5 class="card-title">{{post.title}}<br></h5>
+					<p class="card-text">Likes: {{likes}}<br>Creator: {{post.section.user}}</p>
+				  </div>
+				</div>
+			</a>
+		{% endfor %}
+	</div>
+</div>

@@ -9,86 +9,97 @@
 {% block body_block %}
 
 	<!-- *** PROFILE *** -->
-
-	<!-- Username-->
-	<h3> @{{profile.user.username}} </h3>
-	<!-- Full Name -->
-	<h3> {{profile.user.first_name}} {{profile.user.last_name}} </h3>
-
-	<!-- Profile Picture:-->
-	<img src="{{MEDIA_URL}}{{ profile.picture }}" alt="profile_picture." />
-
-	<!-- Location-->
-	<div>
-		Profession: {{profile.profession}}
-	</div>
 	
-	<div>
-		Location: {{profile.location}}
+	<div class="container-fluid" style="margin-left: 10px !important; margin-top: 10px !important; margin-bottom: 5px !important;">
+	  <div class="row">
+		<div class="col-ml">
+			<!-- Profile Picture:-->
+			<img src="{{MEDIA_URL}}{{ profile.picture }}" style="height: 200px; width: auto; max-width: 300px;" alt="profile_picture." />
+
+		</div>
+		<div class="col-sm">
+		  <!-- Username-->
+			<h3> @{{profile.user.username}} - {{profile.user.first_name}} {{profile.user.last_name}} </h3>
+
+			
+			<!-- Location-->
+			<div>
+				Profession: {{profile.profession}}
+			</div>
+			
+			<div>
+				Location: {{profile.location}}
+			</div>
+
+			<!-- Bio-->
+			<div>
+				Bio: {{profile.bio}}
+			</div>
+
+			<!-- Available-->
+			<div>
+				{{available}} <br> <!-- add checkmark -->
+				{% if profile.available %} <!-- check user profile available boolean field -->
+					{% if user.is_authenticated %} <!-- check the user is logged in to view email -->
+						{{email}}
+					{% else %}
+						Log in to get contact details
+					{% endif %}
+				{% endif %}
+				
+			</div>
+			
+			<!-- Links -->
+			<h3> 
+			{% for site, link in links.items %}
+				<span class="badge badge-secondary"><a href="{{link}}" style=" color: #eeeeee; text-decoration: none; ">{{site}}</a></span>
+			{% endfor %}
+			</h3>
+		</div>
+	  </div>
 	</div>
 
-	<!-- Bio-->
-	<div>
-		Bio: {{profile.bio}}
-	</div>
-
-	<!-- Available-->
-	 
-	<div>
-
-		{{available}} <br> <!-- add checkmark -->
-		{% if profile.available %} <!-- check user profile available boolean field -->
-			{% if user.is_authenticated %} <!-- check the user is logged in to view email -->
-				{{email}}
-			{% else %}
-				Log in to get contact details
-			{% endif %}
-		{% endif %}
+	
+			
+	<!-- Portfolio Title and Add Post/Section/Links buttons -->
+	<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #8a0f0f; color: #eeeeee; height: 90px;">
+		<!-- Nav bar logo -->
+		<a class="navbar-brand" style="font-size: 60px !important;">P O R T F O L I O</a>
+			
+			{% if owner %}
+			<ul class="navbar-nav ml-auto">
+				<!-- Link to add post -->
+				<li class="nav-item"><a class="nav-link" style="color: #eeeeee; font-size: 20px" href="{% url 'design-grid:add_post' %}">Create Post</a></li>	
+				<!-- Link to Create Section -->
+				<li class="nav-item"><a class="nav-link" style="color: #eeeeee; font-size: 20px" href="{% url 'design-grid:add_section' %}">Add Section</a></li>
 		
-	</div>
-			
-	<!-- Links -->
-			
-		{% for site, link in links.items %}
-			<li><a href="{{link}}">{{site}}</a></li>
-		{% endfor %}
-		
-		{% if owner %}
-			{% if 5links %} <!-- Max of 5 links -->
-				<li><a href="{% url 'design-grid:add_link' %}">Add Link</a></li>
+				{% if 5links %} <!-- Max of 5 links -->
+					<li class="nav-item"><a class="nav-link" style="color: #eeeeee; font-size: 20px" href="{% url 'design-grid:add_link' %}">Add Link</a></li>
+				{% endif %}
+			</ul>
 			{% endif %}
-		{% endif %}
-			
-	<!-- Portfolio Title -->
-	<hr>
-	<h2> P O R T F O L I O </h2>
-	<div>
-		{% if owner %}
-			<!-- if user is on their own profile page -->
-			<li><a href="{% url 'design-grid:add_post' %}">Create Post</a></li>
-			<li><a href="{% url 'design-grid:add_section' %}">Add Section</a></li>
-		{% endif %}
-	</div>
+	</nav>
 
 
 	<!-- *** SECTIONS AND POSTS *** -->
-	<hr>
-
-	<div>
-		<!-- loop through dictionary of key section and value posts in that section-->
+	
+	
+	<div class="container-fluid" style="margin-left: 10px !important; margin-top: 10px !important; margin-right: 10px !important;">
 		{% for section, posts in sections.items %}
-			<!-- output section name -->
-			{{section}} <br>
-			{% for post, likes in posts.items %} <!-- loop through posts in this section -->
-				<!-- post attrbutes -->
-				<pre>
-				<img src="{{MEDIA_URL}}{{post.picture}}" alt="post_image." />
-				Title:{{post.title}} <br>
-				Description: {{post.description}} <br>
-				Likes: {{likes}}<br>
-				<a href="{% url 'design-grid:post' post.pid %}">View Post</a>
-				</pre>
-			{% endfor %}
+			<h3> {{section}} </h3>
+			<div class="card-deck">
+				{% for post, likes in posts.items %}
+					<a href="{% url 'design-grid:post' post.pid %}" style="color: #222222;">
+						<div class="card" style="width: 18rem;">
+						  <img class="card-img-top" src="{{MEDIA_URL}}{{post.picture}}" alt="post_image">
+						  <div class="card-body">
+							<h5 class="card-title">{{post.title}}<br></h5>
+							<p class="card-text">{{post.description}}<br>{{likes}} likes</p>
+						  </div>
+						</div>
+					</a>
+				{% endfor %}
+			</div>
 		{% endfor %}
 	</div>
 

@@ -67,15 +67,17 @@ def profession_filter(request):
         posts = Posts.objects.filter(profession=profession)
         tags = PostTags.objects.filter(tag__in=tag_filter).values('post_id')
         posts = posts.filter(pid__in=tags)
+
+        posts_likes = {}
+        for post in posts:
+            posts_likes[post]=len(PostLikes.objects.filter(post=post))
         
         #store relevant tags and professions
         context_dict['tags'] = tags
         context_dict['profession'] = profession
-        context_dict['posts'] = posts
+        context_dict['posts'] = posts_likes
         #number of posts with these tags in this profession
         context_dict['count'] = len(posts)
-
-        context_dict['posts'] = posts
 
         return render(request, 'web_app/profession_posts.html', context_dict)
 
