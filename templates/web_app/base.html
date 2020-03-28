@@ -3,7 +3,10 @@
 {% load designgrid_template_tags %}
 
 <html>
-
+	<!-- JQuery -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" type="text/javascript"></script>
+	
+	<!-- Font -->
 	<link href="https://fonts.googleapis.com/css?family=Nunito|Quicksand&display=swap" rel="stylesheet">
 	<head>
 	<link rel="stylesheet" type="text/css" href="{% static 'styles/styles.css' %}">
@@ -26,6 +29,11 @@
 		<ul  class="navbar">
 		
 			<li class="logo">DesignGrid</li>
+			
+			<!-- SEARCH BAR -->
+			<input id="text" type="text" name="search" value="" size="50" />
+			<input id="search" type="submit" value="search" />
+			
 			<!-- Link to home page -->
 			<li><a href={% url 'design-grid:index' %}>Home</a></li>
 			
@@ -69,5 +77,36 @@
 			{% block body_block %}
 			{% endblock %}
 		</div>
+		
+		<!-- Search bar functionality -->
+		{% csrf_token %}
+		<script>
+		//if user presses enter when typing, search
+		$("#text").keyup(function(event) {
+			if (event.keyCode === 13) {
+				search()
+			}
+		});
+		//if user presses search button, search
+		$('#search').click(function(){
+			search()
+		});
+		
+		function search(){
+
+			$.ajax({
+				type: "POST", //send it through post method
+				headers: {'X-CSRFToken':document.querySelector('[name=csrfmiddlewaretoken]').value},
+				data: {},
+				success: function() {
+					//see if text from search bar exists
+					if ( $('#text').val()!='') {
+						//if it does go to the search url, passing in the search term from the text input
+						window.location.href = "{% url 'design-grid:search' 0 %}".replace('0', $('#text').val());
+					}
+				}
+			});	
+		}
+		</script>
 	</body>
 </html>

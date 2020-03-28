@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class Profession(models.Model):
     name = models.CharField(max_length=128, unique=True)
+    picture = models.ImageField(upload_to='profession_images', blank=False, default='designbig.jpg')
     slug = models.SlugField(unique=True)
 
     #Create slug to display unique model attribute for URLs

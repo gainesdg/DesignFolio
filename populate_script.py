@@ -11,20 +11,27 @@ def populate():
     #professions and tags
     professions = {
         "Architect":
-            ["Extension","Renovation","Floor Plan","Render","Modern","Brutalist","Gothic","Industrial","Landscape","Work-in-progress"],
+            (["Extension","Renovation","Floor Plan","Render","Modern","Brutalist","Gothic","Industrial","Landscape","Work-in-progress"],
+            'profession_images/render-graphic-architecture-3d-thumbnail.jpg'),
         "Graphic Designer":
-            ["Logo","Font","User Interface","Publication","Art and Illustration","Minimalist","Abstract","Work-in-progress"],
+            (["Logo","Font","User Interface","Publication","Art and Illustration","Minimalist","Abstract","Work-in-progress"],
+            'profession_images/6x4thi1oc13y.png'),
         "Artist":
-            ["Digital","Concept","Abstract","Realism","Cartoon","Portrait","Landscape","Cityscape","Sculpture","Sketch","Work-in-progress"],
+            (["Digital","Concept","Abstract","Realism","Cartoon","Portrait","Landscape","Cityscape","Sculpture","Sketch","Work-in-progress"],
+            'profession_images/6351-modern-cityscape-painting.jpg'),
         "Fashion Designer":
-            ["Dress","Suit","Casual","Abstract","Womens","Mens","Day Wear","Evening Wear","Sports Wear","Swim Wear","Lingerie","Work-in-progress"],
+            (["Dress","Suit","Casual","Abstract","Womens","Mens","Day Wear","Evening Wear","Sports Wear","Swim Wear","Lingerie","Work-in-progress"],
+            'profession_images/6351-modern-cityscape-painting.jpg'),
         "Interior Designer":
-            ["Mid-Century Modern","Industrail","Nautical","Scandinavian","Bohemian","Minimalist","Work-in-progress"],
+            (["Mid-Century Modern","Industrail","Nautical","Scandinavian","Bohemian","Minimalist","Work-in-progress"],
+            'profession_images/living-room-pendant-light.jpg'),
         "Game Developer":
-            ["Character Model","Asset Model","Scene","User Interface","Shaders","Animation","Level Design","Work-in-progress"],
+            (["Character Model","Asset Model","Scene","User Interface","Shaders","Animation","Level Design","Work-in-progress"],
+            'profession_images/a96f11c5-5bd8-47eb-b0d5-3af262f70e0b_Thumbnail.PNG'),
         "Software Designer":
-            ["Asset Design","Wireframe Diagrams","Database Diagrams","Class Diagrams","Work-in-progress"],
-        "Guest":[], #Used hobbiests and people who intend to hire people for commisions etc.
+            (["Asset Design","Wireframe Diagrams","Database Diagrams","Class Diagrams","Work-in-progress"],
+            'profession_images/smart_home_controller_1x.png'),
+        "Guest":([],'profession_images/valessiobrito_Coloured_Pencils.png'), #Used hobbiests and people who intend to hire people for commisions etc.
     }
 
     users = {
@@ -219,8 +226,8 @@ def populate():
 
     #add professions and tags using the dictionary above ^
     for prof, tags in professions.items():
-        p = add_profession(prof)
-        for tag in tags:
+        p = add_profession(prof, tags[1])
+        for tag in tags[0]:
             add_tag(tag, p)
 
     #add users
@@ -276,9 +283,9 @@ def populate():
 
 #FUNCTIONS TO ADD MODEL OBJECT
 #CATEGORIES AND TAGS
-def add_profession(name):
+def add_profession(name, picture):
     #Create object
-    p = Profession.objects.get_or_create(name=name)[0]
+    p = Profession.objects.get_or_create(name=name, picture=picture)[0]
     p.save()
     return p
 

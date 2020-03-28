@@ -359,8 +359,7 @@ def search(request, argument):
     
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
-    else:
-        return render(request, 'web_app/search.html', context_dict)
+    return render(request, 'web_app/search.html', context_dict)
 
 
 #REGISTER A NEW USER
