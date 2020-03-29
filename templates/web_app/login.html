@@ -1,21 +1,28 @@
 {% extends 'web_app/base.html' %}
 {% load staticfiles %}
 
+
 {% block title_block %}
 	Log in
 {% endblock %}	
 
 
 {% block body_block %}
-
-	<h1>Login to Design Grid</h1>
-	<form id="login_form" method="post" action="{% url 'design-grid:login' %}">
-	{% csrf_token %}
-	Username: <input type="text" name="username" value="" size="50" />
-	<br />
-	Password: <input type="password" name="password" value="" size="50" />
-	<br />
-	<input type="submit" value="submit" />
-	</form>
+	
+	<div class="container" style="margin: 10px">
+		<h1>Login to Design Grid</h1>
+		<form id="login_form" method="post" action="{% url 'design-grid:login' %}">
+			<div class="form-group">
+				{% csrf_token %}
+				<label for="username">Username</label>
+				<input type="text" class="form-control" name="username" value="" id="username" placeholder="Enter username">
+			</div>
+			<div class="form-group">
+				<label for="password">Password</label>
+				<input type="password" class="form-control" name="password" id="password" value="" placeholder="Enter password">
+			</div>
+			<button type="submit" class="btn btn-primary" value="submit">Submit</button>
+		</form>
+	</div>
 	
 {% endblock %}

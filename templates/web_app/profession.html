@@ -8,16 +8,17 @@
 
 {% block body_block %}
 
-	<div class="container-fluid" style="margin-left: 10px !important; margin-top: 10px !important; margin-right: 10px !important;">
-		<h1>{{profession}}</h1>
-		<div id="counter"> </div>
+	<div class="container-fluid">
+		<h1 style="margin-left: 10px; margin-top: 10px;">{{profession}}</h1>
+		<div  style="margin-left: 10px; margin-top: 10px;" id="counter"> </div>
 	</div>
 	
 	<!--List of Tags-->
-	<div class="container-fluid" style="margin-left: 10px !important; margin-top: 10px !important; margin-bottom: 5px !important;">
+	<div class="container-fluid">
 		<div class="row">
 			<div class="col-ml">
 				<ul id="filter_form">
+				<br>
 					{% csrf_token %}
 					{% for tag in tags %}
 						<input type="checkbox" id="{{tag.name}}" name="{{tag.name}}" value="on" checked>

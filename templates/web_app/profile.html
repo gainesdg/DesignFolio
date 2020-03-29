@@ -10,14 +10,14 @@
 
 	<!-- *** PROFILE *** -->
 	
-	<div class="container-fluid" style="margin-left: 10px !important; margin-top: 10px !important; margin-bottom: 5px !important;">
+	<div class="container-fluid">
 	  <div class="row">
 		<div class="col-ml">
 			<!-- Profile Picture:-->
-			<img src="{{MEDIA_URL}}{{ profile.picture }}" style="height: 200px; width: auto; max-width: 300px;" alt="profile_picture." />
+			<img src="{{MEDIA_URL}}{{ profile.picture }}" style="height: 200px; width: auto; max-width: 300px; margin: 10px;" alt="profile_picture." />
 
 		</div>
-		<div class="col-sm">
+		<div class="col-sm" style="margin-top: 10px;">
 		  <!-- Username-->
 			<h3> @{{profile.user.username}} - {{profile.user.first_name}} {{profile.user.last_name}} </h3>
 
@@ -52,7 +52,7 @@
 			<!-- Links -->
 			<h3> 
 			{% for site, link in links.items %}
-				<span class="badge badge-secondary"><a href="{{link}}" style=" color: #eeeeee; text-decoration: none; ">{{site}}</a></span>
+				<span class="badge badge" style="background-color: #d43535"><a href="{{link}}" style=" color: #eeeeee; text-decoration: none; ">{{site}}</a></span>
 			{% endfor %}
 			</h3>
 		</div>
@@ -62,29 +62,37 @@
 	
 			
 	<!-- Portfolio Title and Add Post/Section/Links buttons -->
-	<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #8a0f0f; color: #eeeeee; height: 90px;">
-		<!-- Nav bar logo -->
-		<a class="navbar-brand" style="font-size: 60px !important;">P O R T F O L I O</a>
-			
-			{% if owner %}
-			<ul class="navbar-nav ml-auto">
-				<!-- Link to add post -->
-				<li class="nav-item"><a class="nav-link" style="color: #eeeeee; font-size: 20px" href="{% url 'design-grid:add_post' %}">Create Post</a></li>	
-				<!-- Link to Create Section -->
-				<li class="nav-item"><a class="nav-link" style="color: #eeeeee; font-size: 20px" href="{% url 'design-grid:add_section' %}">Add Section</a></li>
+	<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ad1111; color: #eeeeee;">
+	
+		<!-- if creen is to small, add collapse and expand button -->
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#portfolionavbar" aria-controls="portfolionavbar" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
 		
-				{% if 5links %} <!-- Max of 5 links -->
-					<li class="nav-item"><a class="nav-link" style="color: #eeeeee; font-size: 20px" href="{% url 'design-grid:add_link' %}">Add Link</a></li>
-				{% endif %}
-			</ul>
+		<div class="collapse navbar-collapse" id="portfolionavbar">
+		
+			<!-- Nav bar logo -->
+			<a class="navbar-brand" style="font-size: 60px !important;">P O R T F O L I O</a>
+				
+			{% if owner %}
+				<ul class="navbar-nav ml-auto">
+					<!-- Link to add post -->
+					<li class="nav-item"><a class="nav-link" style="color: #eeeeee; font-size: 20px" href="{% url 'design-grid:add_post' %}">Create Post</a></li>	
+					<!-- Link to Create Section -->
+					<li class="nav-item"><a class="nav-link" style="color: #eeeeee; font-size: 20px" href="{% url 'design-grid:add_section' %}">Add Section</a></li>
+			
+					{% if 5links %} <!-- Max of 5 links -->
+						<li class="nav-item"><a class="nav-link" style="color: #eeeeee; font-size: 20px" href="{% url 'design-grid:add_link' %}">Add Link</a></li>
+					{% endif %}
+				</ul>
 			{% endif %}
+		</div>
 	</nav>
 
 
 	<!-- *** SECTIONS AND POSTS *** -->
 	
-	
-	<div class="container-fluid" style="margin-left: 10px !important; margin-top: 10px !important; margin-right: 10px !important;">
+	<div class="container-fluid" style="margin-top: 10px">
 		{% for section, posts in sections.items %}
 			<h3> {{section}} </h3>
 			<div class="card-deck">
@@ -102,5 +110,26 @@
 			</div>
 		{% endfor %}
 	</div>
+	
+	<!--
+	{% for section, posts in sections.items %}
+		<button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-expanded="false" aria-controls="{{section}}"><h3>{{section}}</h3></button>
+		
+		<div class="collapse multi-collapse" id="{{section}}">
+			<div class="card-deck">
+				{% for post, likes in posts.items %}
+					<a href="{% url 'design-grid:post' post.pid %}" style="color: #222222;">
+						<div class="card" style="width: 18rem;">
+						  <img class="card-img-top" src="{{MEDIA_URL}}{{post.picture}}" alt="post_image">
+						  <div class="card-body">
+							<h5 class="card-title">{{post.title}}<br></h5>
+							<p class="card-text">{{post.description}}<br>{{likes}} likes</p>
+						  </div>
+						</div>
+					</a>
+				{% endfor %}
+			</div>
+		</div>
+	{% endfor %} -->
 
 {% endblock %}

@@ -8,21 +8,12 @@
 	
 {% block body_block %}
 
-	<h1>Search results for '{{argument}}'</h1>
-	<h2>Users - Username</h2>
+	<div class="container-fluid">
+		<h1>Search results for '{{argument}}'</h1>
+		<h2>Users - Username</h2>
+	</div>
 	
 	<!--Menu of Users filtered by Username-->
-	<!--
-	<ul class="flex-container-b">
-		{% for user in users %}
-		<li class="flex-item-b">
-			<img src="{{MEDIA_URL}}{{user.userprofile.picture}}" alt="profile_image." /><br>
-			<a href="{% url 'design-grid:profile' user.userprofile.slug %}">{{user.username}}</a>
-		</li>
-		{% endfor %}
-		
-	</ul>
-	-->
 	<div class="container-fluid">
 		<div class="card-deck">
 		{% for user in users %}
@@ -38,22 +29,12 @@
 		{% endfor %}
 		</div>
 	</div>
-		
-	<h2>Users - Location</h2>
 	
-	<!--Menu of Users filtered by Location-->
-	<!--
-	<ul class="flex-container-b">
-		{% for user in location %}
-		<li class="flex-item-b">
-			<img src="{{MEDIA_URL}}{{user.picture}}" alt="post_image." /><br>
-			<a href="{% url 'design-grid:profile' user.slug %}">{{user.user.username}}</a>
-		</li>
-		{% endfor %}
-		
-	</ul>
-	-->
+	<div class="container-fluid">
+		<h2>Users - Location</h2>
+	</div>
 	
+	<!--Menu of Users filtered by Location-->	
 	<div class="container-fluid">
 		<div class="card-deck">
 	{% for userprofile in location %}
@@ -70,20 +51,11 @@
 		</div>
 	</div>
 	
-	<h2>Posts - Titles</h2>
+	<div class="container-fluid">
+		<h2>Posts - Titles</h2>
+	</div>
 	
 	<!--Menu of Posts-->
-	<!--
-	<ul class="flex-container-b">
-		{% for post in posts %}
-		<li class="flex-item-b">
-			<img src="{{MEDIA_URL}}{{post.picture}}" alt="post_image." /><br>
-			<a href="{% url 'design-grid:post' post.pid %}">{{post.title}}</a>
-		</li>
-		{% endfor %}
-		
-	</ul>
-	-->
 	<div class="container-fluid">
 		<div class="card-deck">
 	{% for post in posts %}

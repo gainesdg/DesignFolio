@@ -7,19 +7,29 @@
 
 
 {% block body_block %}
-
+	
 	<!--Heading-->
-	<h1>Home</h1>
+	<div class="container-fluid">
+		<h1>Home</h1>
+	</div>
 
-	<!--Menu of Professions-->
-	<ul class="flex-container-b">
-		{% for profession in professions %}
-		<li class="flex-item-b">
-
-			<a href="{% url 'design-grid:profession' profession.slug %}">{{profession.name}}</a>
-		</li>
-		{% endfor %}
-		
-	</ul>
+	<!--Menu of Posts-->
+	<div class="container-fluid">
+		<div class="card-deck">
+			{% for profession in professions %}
+				<div class="col-sm-3">
+					<a href="{% url 'design-grid:profession' profession.slug %}" style="color: #eeeeee;">
+						<div class="card" style="width: 20rem;">
+						  <img class="card-img-top" src="{{MEDIA_URL}}{{profession.picture}}" alt="profession_image">
+						  <div class="card-img-overlay">
+							<h5 class="card-title">{{profession}}s</h5>
+						  </div>
+						</div>
+					</a>
+				<br>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
 
 {% endblock %}

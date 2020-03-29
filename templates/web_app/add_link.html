@@ -11,9 +11,17 @@
 	<form id="add_link_form" method="post" action="{% url 'design-grid:add_link' %}">
 		{% csrf_token %} <!---protects information passed during hidden post -->
 		
-		{{ form.as_p }}
 		
-		<input type="submit" name="submit" value="Add Link" />
+		<div class="container" style="margin: 5px">
+		<h1>Add A Link</h1>
+			{% for field in form %}
+				{{ field.errors }}
+				{{ field.help_text }}
+				{{field.label}} {{ field }}
+				<br>
+			{% endfor %}
+			<input type="submit" name="submit" value="Add Link" />
+		</div>
 	</form>
 	
 {% endblock %}

@@ -32,8 +32,8 @@
 	
 	<!-- contents of the page -->
 	<body>
-		<!-- NAV BAR -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<!-- NAV BAR -->										<!-- Nav bar colour -->
+		<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #800000; color: #eeeeee;">
 			<!-- Nav bar logo -->
 			<a class="navbar-brand">Design Grid</a>
 			
@@ -44,13 +44,13 @@
 			
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<!-- Navbar with search bar -->
-				<ul class="navbar-nav ">
+				<ul class="navbar-nav">
 					<!-- Search bar -->
 					<li class="form-inline my-2 my-lg-0">
 						<span class="input-group-append">
-						<input id="text" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+						<input id="text" class="form-control mr-sm-2" style="margin-left: 100px; width: 400px;" type="search" placeholder="Search" aria-label="Search">
 						
-						<button id="search" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+						<button id="search" class="btn my-2 my-sm-0" type="submit">Search</button>
 					</li>
 					
 				</ul>
@@ -59,14 +59,14 @@
 				
 					<!-- Home Button -->
 					<li class="nav-item">
-						<a class="nav-link" href="{% url 'design-grid:index' %}">Home</a>
+						<a class="nav-link" style="color: #eeeeee;" href="{% url 'design-grid:index' %}">Home</a>
 					</li>
 					
 					<!-- Professions list -->
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professions </a>
+						<a class="nav-link dropdown-toggle" style="color: #eeeeee;" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Professions </a>
 						
-						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown" >
 							{% for profession in professions %}
 								<a class="dropdown-item" href="{% url 'design-grid:profession' profession.slug %}">{{profession.name}}</a>
 							{% endfor %}
@@ -76,7 +76,7 @@
 					<!-- Drop down Menu - Profile and Login/register etc -->
 					{% if user.is_authenticated %}
 						<li class="nav-item dropdown ">
-							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Profile </a>
+							<a class="nav-link dropdown-toggle" style="color: #eeeeee;" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">My Profile </a>
 							
 							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 								{% if not request.user.is_superuser %}
@@ -90,7 +90,7 @@
 					<!-- Login/register -->
 					{% else %}
 						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Log in </a>
+							<a class="nav-link dropdown-toggle" style="color: #eeeeee;" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Log in </a>
 							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 								<a class="dropdown-item" href="{% url 'design-grid:login' %}">Log in</a>
 								<a class="dropdown-item" href="{% url 'design-grid:register' %}">Sign up</a>

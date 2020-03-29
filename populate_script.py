@@ -12,26 +12,26 @@ def populate():
     professions = {
         "Architect":
             (["Extension","Renovation","Floor Plan","Render","Modern","Brutalist","Gothic","Industrial","Landscape","Work-in-progress"],
-            'profession_images/render-graphic-architecture-3d-thumbnail.jpg'),
+            'profession_images/render-graphic-architecture-3d-thumbnail.jpg.png'),
         "Graphic Designer":
             (["Logo","Font","User Interface","Publication","Art and Illustration","Minimalist","Abstract","Work-in-progress"],
             'profession_images/6x4thi1oc13y.png'),
         "Artist":
             (["Digital","Concept","Abstract","Realism","Cartoon","Portrait","Landscape","Cityscape","Sculpture","Sketch","Work-in-progress"],
-            'profession_images/6351-modern-cityscape-painting.jpg'),
+            'profession_images/6351-modern-cityscape-painting.jpg.png'),
         "Fashion Designer":
             (["Dress","Suit","Casual","Abstract","Womens","Mens","Day Wear","Evening Wear","Sports Wear","Swim Wear","Lingerie","Work-in-progress"],
-            'profession_images/6351-modern-cityscape-painting.jpg'),
+            'profession_images/7d701493bbd24bdb53d84012bb3cc5e8.jpg.png'),
         "Interior Designer":
             (["Mid-Century Modern","Industrail","Nautical","Scandinavian","Bohemian","Minimalist","Work-in-progress"],
-            'profession_images/living-room-pendant-light.jpg'),
+            'profession_images/living-room-pendant-light.jpg.png'),
         "Game Developer":
             (["Character Model","Asset Model","Scene","User Interface","Shaders","Animation","Level Design","Work-in-progress"],
             'profession_images/a96f11c5-5bd8-47eb-b0d5-3af262f70e0b_Thumbnail.PNG'),
         "Software Designer":
             (["Asset Design","Wireframe Diagrams","Database Diagrams","Class Diagrams","Work-in-progress"],
             'profession_images/smart_home_controller_1x.png'),
-        "Guest":([],'profession_images/valessiobrito_Coloured_Pencils.png'), #Used hobbiests and people who intend to hire people for commisions etc.
+        "Guest":([],'profession_images/designbig.jpg.png'), #Used hobbiests and people who intend to hire people for commisions etc.
     }
 
     users = {

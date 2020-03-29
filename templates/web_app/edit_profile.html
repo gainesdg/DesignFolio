@@ -7,21 +7,30 @@
 
 
 {% block body_block %}
+	
+	<div class="container" style="margin: 10px">
+		<h1>Edit your profile here</h1>
+		{% if saved %}
+			<strong>Profile Updated!</strong>
+			<a href="{% url 'design-grid:profile' user.userprofile.slug %}">Return to Profile Page</a><br />
+		{% else %}
+			<form id="profile_form" method="post" action="{% url 'design-grid:edit_profile' %}"16 enctype="multipart/form-data">
+			{% csrf_token %}
 
-	<h1>Edit your profile here</h1>
-	{% if saved %}
-		<strong>Profile Updated!</strong>
-		<a href="{% url 'design-grid:profile' user.userprofile.slug %}">Return to Profile Page</a><br />
-	{% else %}
-		<form id="profile_form" method="post" action="{% url 'design-grid:edit_profile' %}"16 enctype="multipart/form-data">
-		{% csrf_token %}
+			<!-- Display the form -->
+			{% for field in profile_form %}
+				{{ field.errors }}
+				{{ field.help_text }}
+				{{ field.label }}
+				{{ field}}
+				<br><br>
+			{% endfor %}
 
-		<!-- Display the form -->
-		{{ profile_form.as_p }}
-
-		<!-- Provide a button to click to submit the form. -->
-		<input type="submit" name="submit" value="Save" />
-		</form>
-	{% endif %}
+			<!-- Provide a button to click to submit the form. -->
+			<input type="submit" name="submit" value="Save Details" />
+			</form>
+		
+		{% endif %}
+	</div>
 
 {% endblock %}

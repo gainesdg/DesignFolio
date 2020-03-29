@@ -7,31 +7,41 @@
 
 
 {% block body_block %}
-
+	
 	<form id="add_post_form" method="post" enctype="multipart/form-data" action="{% url 'design-grid:add_post' %}">
 		{% csrf_token %} <!---protects information passed during hidden post -->
 		
-		<!-- section drop down menu form -->
-		{{ section.as_p }}
 		
-		<!-- post details form -->
-		{% for field in post_form %}
-			{{ field.errors }}
-			{{ field.help_text }}
-			{{ field }}
-			<br>
-		{% endfor %}
+		<div class="container" style="margin: 10px">
+			<h1>Create a Post</h1>
+
+			<div class="row" style="margin: 5px">
+				<div class="col-ml">
+					<!-- post tags -->
+					Include <strong>Tags</strong> in your post!<br>
+					<!-- loop through each tag and create a checkbox with the name of the tag -->
+					{% for tag in tags %}
+						<input type="checkbox" id="{{tag.name}}" name="{{tag.name}}" value="on">
+						{{tag}}
+						<br>
+					{% endfor %}
+				</div>
+				<div class="col-sm">
+					<!-- section drop down menu form -->
+					{{ section.as_p }}
+					
+					<!-- post details form -->
+					{% for field in post_form %}
+						{{ field.errors }}
+						{{ field.help_text }}
+						{{ field }}
+						<br>
+					{% endfor %}
+					<input type="submit" name="submit" value="Create Post" />
+				</div>
+			</div>
+		</div>
 		
-		<!-- post tags -->
-		Tags<br>
-		<!-- loop through each tag and create a checkbox with the name of the tag -->
-		{% for tag in tags %}
-			<input type="checkbox" id="{{tag.name}}" name="{{tag.name}}" value="on">
-			{{tag}}
-			<br>
-		{% endfor %}
-		
-		<input type="submit" name="submit" value="Create Post" />
 	</form>
 	
 {% endblock %}
