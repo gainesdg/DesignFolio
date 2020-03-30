@@ -12,6 +12,11 @@
 	<div class="container" style="margin: 10px">
 		<h1>Login to Design Grid</h1>
 		<form id="login_form" method="post" action="{% url 'design-grid:login' %}">
+			{% if alert %}
+				<div class="alert alert-danger" role="alert">
+					{{alert}}
+				</div>
+			{% endif %}
 			<div class="form-group">
 				{% csrf_token %}
 				<label for="username">Username</label>

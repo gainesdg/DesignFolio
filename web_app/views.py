@@ -64,7 +64,7 @@ def profession_filter(request):
         #Get all posts in this profession
         #Get all post-tag relations that match the filtered subset of tags
         #Filter the posts that only appear with these tags
-        posts = Posts.objects.filter(profession=profession)
+        posts = Posts.objects.filter(profession=profession).order_by('-pid') #order by most recently posted first
         tags = PostTags.objects.filter(tag__in=tag_filter).values('post_id')
         posts = posts.filter(pid__in=tags)
 
@@ -170,7 +170,7 @@ def post(request, posts_pid):
             if liked:
                 like.delete()
             else:
-                PostLikes.objects.get_or_create(user=user, post=post)
+                PostLikes.objects.get_or_create(user=request.user, post=post)
         
     return render(request, 'web_app/post.html', context_dict)
 
@@ -425,11 +425,10 @@ def user_login(request):
                 return redirect(reverse('design-grid:profile', kwargs={'user_name_slug': user_name_slug } ))
             else:
                 # An inactive account was used - no logging in
-                return HttpResponse('Your DesignGrid account is disabled.')
+                return render(request, 'web_app/login.html', context={'alert':'Your account has been disabled'})
         else:
             # Bad login details were provided. So we can't log the user in.
-            print(f"Invalid login details: {username}, {password}")
-            return HttpResponse("Invalid login details supplied.")
+            return render(request, 'web_app/login.html', context={'alert':'Email or password is incorrect'})
     
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
