@@ -1,0 +1,17 @@
+{% extends 'web_app/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	Missing Content
+{% endblock %}	
+
+
+{% block body_block %}
+
+<div class="container" style="margin: 10px">
+	<h3> Oops... Sorry! </h3>
+	<h1> Error {{error_num}}: </h1>
+	<h2> {{error_msg}} </h2>
+</div>
+
+{% endblock %}

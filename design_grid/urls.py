@@ -27,3 +27,7 @@ urlpatterns = [
     path('design-grid/', include('web_app.urls')),
     path('admin/', admin.site.urls),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = views.handler404
+handler403 = views.handler403
+handler500 = views.handler500

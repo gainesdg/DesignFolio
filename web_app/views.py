@@ -441,3 +441,14 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect(reverse('design-grid:index'))
+
+
+
+def handler404(request, exception):
+    return render(request, 'web_app/errors.html', status=404, context={"error_num":"404","error_msg":"PAGE NOT FOUND."})
+
+def handler403(request, exception):
+    return render(request, 'web_app/errors.html', status=403, context={"error_num":"403","error_msg":"FORBIDDEN."})
+
+def handler500(request):
+    return render(request, 'web_app/errors.html', status=500, context={"error_num":"500","error_msg":"SERVER ERROR."})
