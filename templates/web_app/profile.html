@@ -38,14 +38,15 @@
 
 			<!-- Available-->
 			<div>
-				{{available}} <br> <!-- add checkmark -->
+				{{available}} <!-- add checkmark -->
 				{% if profile.available %} <!-- check user profile available boolean field -->
+					<img src="{% static 'images/check.png' %}" style="height: 13px; margin-bottom: 3px" alt="check"/><br>
 					{% if user.is_authenticated %} <!-- check the user is logged in to view email -->
 						{{email}}
 					{% else %}
 						Log in to get contact details
 					{% endif %}
-				{% endif %}
+				{% endif %}<br>
 				
 			</div>
 			
