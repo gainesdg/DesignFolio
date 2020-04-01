@@ -7,7 +7,12 @@
 
 
 {% block body_block %}
-
+	
+	{% if alert %}
+		<div class="alert alert-danger" role="alert">
+			{{alert}}
+		</div>
+	{% endif %}
 	<form id="add_section_form" method="post" action="{% url 'design-grid:add_section' %}">
 		{% csrf_token %} <!---protects information passed during hidden post -->
 		

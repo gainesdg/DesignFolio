@@ -19,7 +19,7 @@
 		{% for user in users %}
 			<a href="{% url 'design-grid:profile' user.userprofile.slug %}" style="color: #222222;">
 				<div class="card" style="width: 18rem;">
-					<img class="card-img-top" src="{{MEDIA_URL}}{{user.userprofile.picture}}" alt="profile_image">
+					<img class="card-img-top" style="object-fit: cover; height:300px; width:300px" src="{{MEDIA_URL}}{{user.userprofile.picture}}" alt="profile_image">
 					<div class="card-body" style="object-fit: cover;">
 						<h5 class="card-title">{{user.username}}</h5>
 						<p class="card-text">{{user.userprofile.bio}}</p>
@@ -40,7 +40,7 @@
 	{% for userprofile in location %}
 		<a href="{% url 'design-grid:profile' userprofile.slug %}" style="color: #222222;">
 			<div class="card" style="width: 18rem;">
-			  <img class="card-img-top" src="{{MEDIA_URL}}{{userprofile.picture}}" alt="profile_image">
+			  <img class="card-img-top" style="object-fit: cover; height:300px; width:300px" src="{{MEDIA_URL}}{{userprofile.picture}}" alt="profile_image">
 			  <div class="card-body">
 				<h5 class="card-title">{{userprofile.user.username}}</h5>
 				<p class="card-text">{{userprofile.location}}</p>
@@ -61,7 +61,7 @@
 	{% for post in posts %}
 		<a href="{% url 'design-grid:post' post.pid %}" style="color: #222222;">
 			<div class="card" style="width: 18rem;">
-			  <img class="card-img-top" src="{{MEDIA_URL}}{{post.picture}}" alt="post_image">
+			  <img class="card-img-top" style="object-fit: cover; height:300px; width:300px" src="{{MEDIA_URL}}{{post.picture}}" alt="post_image">
 			  <div class="card-body">
 				<h5 class="card-title">{{post.title}}</h5>
 				<p class="card-text">By: {{post.section.user}}</p>

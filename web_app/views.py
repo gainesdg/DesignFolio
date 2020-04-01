@@ -185,6 +185,8 @@ def get_server_side_cookie(request, cookie, default_val=None):
 #ADD A POST TO A SECTION IN THE USERS PROFILE
 @login_required
 def add_post(request):   
+
+    context={}
     #Form for general post attributes.     
     post_form = CreatePostForm(user=request.user)
     
@@ -222,13 +224,13 @@ def add_post(request):
             return redirect(reverse('design-grid:post', kwargs={'posts_pid': posts_pid} ))
         else:
             # The supplied form contained errors -
-            # just print them to the terminal.
-            print(post_form.errors)#,tags_form.errors)
-            return HttpResponse("Error whilst processing your request")
-            
+            context['alert'] = "Error whilst processing your request"
+    
+    context['post_form']=post_form
+    context['tags']=tag_list
     # Will handle the bad form, new form, or no form supplied cases.
     # Render the form with error messages (if any).
-    return render(request, 'web_app/add_post.html', {'post_form': post_form, 'tags':tag_list})
+    return render(request, 'web_app/add_post.html', context=context)
 
 
 #ADD A SECTION (WHICH CONTAINS POSTS) TO THE USERS PROFILE
@@ -253,9 +255,7 @@ def add_section(request):
             return redirect(reverse('design-grid:profile', kwargs={'user_name_slug': user_name_slug } ))
         else:
             # The supplied form contained errors -
-            # just print them to the terminal.
-            print(form.errors)
-            return HttpResponse("Invalid form supplied. Do you already have a section with this name?")
+            return render(request, 'web_app/add_link.html', context={'alert':'Do you already have a section with this name?','form': form})
 
     else:
         form = CreateSectionForm()
@@ -269,6 +269,7 @@ def add_section(request):
 def edit_profile(request):
     saved = False #If saved, template will offer URL to move to profile page
 
+    context={}
     if request.method == 'POST':
         #Pass the user profile as an instance.
         #This informs the form what profile to edit
@@ -291,16 +292,16 @@ def edit_profile(request):
             saved = True
         else:
             #Will produce errors if the form is not completed correctly
-            print(profile_form.errors)
-            return HttpResponse("Invalid details supplied.")
+            context['alert'] = "Invalid details supplied."
     else:
         #Base form
         user_profile = UserProfile.objects.get(user=request.user)
         profile_form = EditProfileForm(instance=user_profile)
 
+    context['profile_form']= profile_form
+    context['saved']= saved
     #Render the page
-    return render(request, 'web_app/edit_profile.html', context={'profile_form': profile_form,
-                                                           'saved': saved})
+    return render(request, 'web_app/edit_profile.html', context=context)
 
 
 #ADD A LINK TO THE USERS PROFILE
@@ -324,9 +325,7 @@ def add_link(request):
             return redirect(reverse('design-grid:profile', kwargs={'user_name_slug': user_name_slug } ))
         else:
             # The supplied form contained errors -
-            # just print them to the terminal.
-            print(form.errors)
-            return HttpResponse("Invalid site details supplied. Someone has already claimed this URL.")
+            return render(request, 'web_app/add_link.html', context={'alert':' Someone has already claimed this URL.','form': form})
 
     else:
         form = UserLinksForm()

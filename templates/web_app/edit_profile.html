@@ -14,6 +14,11 @@
 			<strong>Profile Updated!</strong>
 			<a href="{% url 'design-grid:profile' user.userprofile.slug %}">Return to Profile Page</a><br />
 		{% else %}
+			{% if alert %}
+				<div class="alert alert-danger" role="alert">
+					{{alert}}
+				</div>
+			{% endif %}
 			<form id="profile_form" method="post" action="{% url 'design-grid:edit_profile' %}"16 enctype="multipart/form-data">
 			{% csrf_token %}
 
