@@ -28,7 +28,7 @@ SECRET_KEY = 'b46&^t6hqqa93uvb!#ts)+we7i*vmbs58#^6+nrohg_mieh_8='
         #default= True
 DEBUG = True#False
         #default= []
-ALLOWED_HOSTS = []#['localhost', '127.0.0.1', '[::1]']
+ALLOWED_HOSTS = []#[DesignGrid.pythonanywhere.com]#['localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition

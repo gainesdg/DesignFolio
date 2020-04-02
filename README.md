@@ -24,6 +24,12 @@
 	
 If images are not loading check settings.py in 'DesignFolio > design_grid > settings.py' Scroll down and check that `DEBUG = True`
 
+####Running Tests:
+
+Close the server if it is running.
+Run the test using:
+`python manage.py test`
+
 
 ####Dependancies:
 *	[JQuery](https://code.jquery.com/jquery-3.4.1.min.js)
