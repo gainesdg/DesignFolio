@@ -1,5 +1,9 @@
 ##Design Grid
 
+####What is Design Grid?
+
+You can think of Design Grid as a professional Instagram in the same way Linkedin is a professional Facebook. Design Grid is a website where people can upload Images and build up a portfolio. You can find the posts seperated by the professions of users (e.g you can find posts by Artists in the Artist section). This website is also for potential employers. If someone is looking to commision someone for a piece of art and design, they can filter posts in each profession by a series of Tags as to find what they are looking for and from their can get in contact with the user if they are available for commisions.
+
 ####Setup:
 	
 1.	Clone the repo using : 
